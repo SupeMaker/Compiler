@@ -17,6 +17,7 @@ int yylex();
 
 %token<name> ID NUM LESS_EQUAL_THAN LESS_THAN GREAT_THAN GREAT_EQUAL_THAN DOUBLE_EQUAL NOT_EQUAL
 %token<name> KEYWORD_ELSE KEYWORD_IF KEYWORD_INT KEYWORD_RETURN KEYWORD_VOID KEYWORD_WHILE MULTI_LINE_ANNOTATION
+%token<name> KEYWORD_AND KEYWORD_OR KEYWORD_NO
 %type<node> program comment declaration_list declaration var_declaration type_specifier fun_declaration params param_list param compound_stmt local_declarations statement_list
 %type<node> statement expression_stmt selection_stmt iteration_stmt return_stmt expression var simple_expression additive_expression term factor call args arg_list
 %left '+' '-'
@@ -103,9 +104,11 @@ iteration_stmt : KEYWORD_WHILE '(' expression {
 return_stmt : KEYWORD_RETURN ';' { $$ = makeNode("return\n", NULL, NULL); }
             | KEYWORD_RETURN expression ';' { $$ = makeNode("return", NULL, $2); }
             ;
-expression  : var '=' expression { $$ = makeNode("=", $1, $3); getElement(symbolTable, $1->operand)->value = $3->Val; }
-            | simple_expression { $$ = $1; }
-            ;
+expression : var '=' expression { $$ = makeNode("=",$1,$3); getElement(symbolTable, $1->operand)->value = $3->Val;}
+           | simple_expression KEYWORD_AND simple_expression        { $$ = makeNode("expression", $1, $3); $$->Val = $1 && $3; }
+           | simple_expression KEYWORD_OR simple_expression        { $$ = makeNode("expression", $1, $3); $$->Val = $1 || $3; }
+           | KEYWORD_NO '(' simple_expression ')'       { $$ = makeNode("expression", $3, NULL); $$->Val = !$3; }
+           | simple_expression { $$ = $1; }
 var : ID {
             $$ = makeNode($1, NULL, NULL);
             if (Count(symbolTable, $1))
