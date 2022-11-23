@@ -5,12 +5,17 @@ int main(void)
 	int a;
 	int b;
 	int c;
+	int d;
+	int e;
+	int f;
 
 	i = 3;
 	j = 4;
 	a = i + j + 1;
 	b = i * j * 2;
-	b = 0-b;
-	c = b/(0-a);
+	c = 0-b;
+	d = b/(0-a);
+	e = b%a;
+	f = i ^ j;
 	return;
 }

@@ -32,6 +32,9 @@ NUM        {digit}{digit}*
 ">="                                            { printf("%s", yytext); yylval.name = strdup(yytext); return GREAT_EQUAL_THAN; }
 "=="                                            { printf("%s", yytext); yylval.name = strdup(yytext); return DOUBLE_EQUAL; }
 "!="                                            { printf("%s", yytext); yylval.name = strdup(yytext); return NOT_EQUAL; }
+"&&"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_AND; }
+"||"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_OR; }
+"!"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_NO; }
 {id}                                            { printf("%s", yytext); yylval.name = strdup(yytext); return ID; }
 {NUM}                                           { printf("%s", yytext); yylval.name = strdup(yytext); return NUM; }
 "/*"[^*]*"*/"|"/*"[^*]*"*/"\n                                   { printf("%s", yytext); return MULTI_LINE_ANNOTATION; }
