@@ -71,7 +71,8 @@ extern int yydebug;
     MULTI_LINE_ANNOTATION = 272,   /* MULTI_LINE_ANNOTATION  */
     KEYWORD_AND = 273,             /* KEYWORD_AND  */
     KEYWORD_OR = 274,              /* KEYWORD_OR  */
-    KEYWORD_NO = 275               /* KEYWORD_NO  */
+    KEYWORD_NO = 275,              /* KEYWORD_NO  */
+    KEYWORD_FOR = 276              /* KEYWORD_FOR  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -98,6 +99,7 @@ extern int yydebug;
 #define KEYWORD_AND 273
 #define KEYWORD_OR 274
 #define KEYWORD_NO 275
+#define KEYWORD_FOR 276
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -108,7 +110,7 @@ union YYSTYPE
   char* name;
   struct astNode *node;
 
-#line 112 "y.tab.h"
+#line 114 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

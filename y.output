@@ -1,5 +1,5 @@
 State 0 conflicts: 2 shift/reduce
-State 117 conflicts: 1 shift/reduce
+State 129 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -17,219 +17,232 @@ Grammar
 
     7 var_declaration: type_specifier ID ';'
     8                | type_specifier ID '[' NUM ']' ';'
+    9                | type_specifier ID '=' expression ';'
 
-    9 type_specifier: KEYWORD_INT
-   10               | KEYWORD_VOID
+   10 type_specifier: KEYWORD_INT
+   11               | KEYWORD_VOID
 
-   11 fun_declaration: type_specifier ID '(' params ')' compound_stmt
+   12 fun_declaration: type_specifier ID '(' params ')' compound_stmt
 
-   12 comment: comment MULTI_LINE_ANNOTATION
-   13        | ε
+   13 comment: comment MULTI_LINE_ANNOTATION
+   14        | ε
 
-   14 params: param_list
-   15       | KEYWORD_VOID
+   15 params: param_list
+   16       | KEYWORD_VOID
 
-   16 param_list: param_list ',' param
-   17           | param
+   17 param_list: param_list ',' param
+   18           | param
 
-   18 param: type_specifier ID
-   19      | type_specifier ID '[' ']'
+   19 param: type_specifier ID
+   20      | type_specifier ID '[' ']'
 
-   20 compound_stmt: '{' local_declarations statement_list '}'
+   21 compound_stmt: '{' local_declarations statement_list '}'
 
-   21 local_declarations: local_declarations var_declaration
-   22                   | ε
+   22 local_declarations: local_declarations var_declaration
+   23                   | ε
 
-   23 statement_list: statement_list statement comment
-   24               | ε
+   24 statement_list: statement_list statement comment
+   25               | ε
 
-   25 statement: expression_stmt
-   26          | compound_stmt
-   27          | selection_stmt
-   28          | iteration_stmt
-   29          | return_stmt
+   26 statement: expression_stmt
+   27          | compound_stmt
+   28          | selection_stmt
+   29          | iteration_stmt
+   30          | for_stmt
+   31          | return_stmt
 
-   30 expression_stmt: expression ';'
-   31                | ';'
+   32 expression_stmt: expression ';'
+   33                | ';'
 
-   32 selection_stmt: KEYWORD_IF '(' expression ')' statement
-   33               | KEYWORD_IF '(' expression ')' statement KEYWORD_ELSE statement
+   34 selection_stmt: KEYWORD_IF '(' expression ')' statement
+   35               | KEYWORD_IF '(' expression ')' statement KEYWORD_ELSE statement
 
-   34 $@1: ε
+   36 $@1: ε
 
-   35 iteration_stmt: KEYWORD_WHILE '(' expression $@1 ')' statement
+   37 iteration_stmt: KEYWORD_WHILE '(' expression $@1 ')' statement
 
-   36 return_stmt: KEYWORD_RETURN ';'
-   37            | KEYWORD_RETURN expression ';'
+   38 for_stmt: KEYWORD_FOR '(' ';' expression ';' ')' statement
+   39         | KEYWORD_FOR '(' expression ';' expression ';' ')' statement
+   40         | KEYWORD_FOR '(' expression ';' expression ';' expression ')' statement
+   41         | KEYWORD_FOR '(' ';' expression ';' expression ')' statement
+   42         | KEYWORD_FOR '(' var_declaration expression ';' expression ')' statement
+   43         | KEYWORD_FOR '(' var_declaration expression ';' ')' statement
 
-   38 expression: var '=' expression
-   39           | simple_expression KEYWORD_AND simple_expression
-   40           | simple_expression KEYWORD_OR simple_expression
-   41           | KEYWORD_NO '(' simple_expression ')'
-   42           | simple_expression
+   44 return_stmt: KEYWORD_RETURN ';'
+   45            | KEYWORD_RETURN expression ';'
 
-   43 var: ID
-   44    | ID '[' expression ']'
+   46 expression: var '=' expression
+   47           | simple_expression KEYWORD_AND simple_expression
+   48           | simple_expression KEYWORD_OR simple_expression
+   49           | KEYWORD_NO '(' simple_expression ')'
+   50           | simple_expression
 
-   45 simple_expression: additive_expression LESS_EQUAL_THAN additive_expression
-   46                  | additive_expression LESS_THAN additive_expression
-   47                  | additive_expression GREAT_THAN additive_expression
-   48                  | additive_expression GREAT_EQUAL_THAN additive_expression
-   49                  | additive_expression DOUBLE_EQUAL additive_expression
-   50                  | additive_expression NOT_EQUAL additive_expression
-   51                  | additive_expression
+   51 var: ID
+   52    | ID '[' expression ']'
 
-   52 additive_expression: additive_expression '+' term
-   53                    | additive_expression '-' term
-   54                    | term
+   53 simple_expression: additive_expression LESS_EQUAL_THAN additive_expression
+   54                  | additive_expression LESS_THAN additive_expression
+   55                  | additive_expression GREAT_THAN additive_expression
+   56                  | additive_expression GREAT_EQUAL_THAN additive_expression
+   57                  | additive_expression DOUBLE_EQUAL additive_expression
+   58                  | additive_expression NOT_EQUAL additive_expression
+   59                  | additive_expression
 
-   55 term: term '^' factor
-   56     | term '*' factor
-   57     | term '/' factor
-   58     | term '%' factor
-   59     | factor
+   60 additive_expression: additive_expression '+' term
+   61                    | additive_expression '-' term
+   62                    | term
 
-   60 factor: '(' expression ')'
-   61       | var
-   62       | call
-   63       | NUM
+   63 term: term '^' factor
+   64     | term '*' factor
+   65     | term '/' factor
+   66     | term '%' factor
+   67     | factor
 
-   64 call: ID '(' args ')'
+   68 factor: '(' expression ')'
+   69       | var
+   70       | call
+   71       | NUM
 
-   65 args: arg_list
-   66     | ε
+   72 call: ID '(' args ')'
 
-   67 arg_list: arg_list ',' expression
-   68         | expression
+   73 args: arg_list
+   74     | ε
+
+   75 arg_list: arg_list ',' expression
+   76         | expression
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '%' (37) 58
-    '(' (40) 11 32 33 35 41 60 64
-    ')' (41) 11 32 33 35 41 60 64
-    '*' (42) 56
-    '+' (43) 52
-    ',' (44) 16 67
-    '-' (45) 53
-    '/' (47) 57
-    ';' (59) 7 8 30 31 36 37
-    '=' (61) 38
-    '[' (91) 8 19 44
-    ']' (93) 8 19 44
-    '^' (94) 55
-    '{' (123) 20
-    '}' (125) 20
+    '%' (37) 66
+    '(' (40) 12 34 35 37 38 39 40 41 42 43 49 68 72
+    ')' (41) 12 34 35 37 38 39 40 41 42 43 49 68 72
+    '*' (42) 64
+    '+' (43) 60
+    ',' (44) 17 75
+    '-' (45) 61
+    '/' (47) 65
+    ';' (59) 7 8 9 32 33 38 39 40 41 42 43 44 45
+    '=' (61) 9 46
+    '[' (91) 8 20 52
+    ']' (93) 8 20 52
+    '^' (94) 63
+    '{' (123) 21
+    '}' (125) 21
     error (256)
-    ID <name> (258) 7 8 11 18 19 43 44 64
-    NUM <name> (259) 8 63
-    LESS_EQUAL_THAN <name> (260) 45
-    LESS_THAN <name> (261) 46
-    GREAT_THAN <name> (262) 47
-    GREAT_EQUAL_THAN <name> (263) 48
-    DOUBLE_EQUAL <name> (264) 49
-    NOT_EQUAL <name> (265) 50
-    KEYWORD_ELSE <name> (266) 33
-    KEYWORD_IF <name> (267) 32 33
-    KEYWORD_INT <name> (268) 9
-    KEYWORD_RETURN <name> (269) 36 37
-    KEYWORD_VOID <name> (270) 10 15
-    KEYWORD_WHILE <name> (271) 35
-    MULTI_LINE_ANNOTATION <name> (272) 12
-    KEYWORD_AND <name> (273) 39
-    KEYWORD_OR <name> (274) 40
-    KEYWORD_NO <name> (275) 41
+    ID <name> (258) 7 8 9 12 19 20 51 52 72
+    NUM <name> (259) 8 71
+    LESS_EQUAL_THAN <name> (260) 53
+    LESS_THAN <name> (261) 54
+    GREAT_THAN <name> (262) 55
+    GREAT_EQUAL_THAN <name> (263) 56
+    DOUBLE_EQUAL <name> (264) 57
+    NOT_EQUAL <name> (265) 58
+    KEYWORD_ELSE <name> (266) 35
+    KEYWORD_IF <name> (267) 34 35
+    KEYWORD_INT <name> (268) 10
+    KEYWORD_RETURN <name> (269) 44 45
+    KEYWORD_VOID <name> (270) 11 16
+    KEYWORD_WHILE <name> (271) 37
+    MULTI_LINE_ANNOTATION <name> (272) 13
+    KEYWORD_AND <name> (273) 47
+    KEYWORD_OR <name> (274) 48
+    KEYWORD_NO <name> (275) 49
+    KEYWORD_FOR <name> (276) 38 39 40 41 42 43
 
 
 Nonterminals, with rules where they appear
 
-    $accept (36)
+    $accept (37)
         on left: 0
-    program <node> (37)
+    program <node> (38)
         on left: 1
         on right: 0
-    declaration_list <node> (38)
+    declaration_list <node> (39)
         on left: 2 3 4
         on right: 1 2
-    declaration <node> (39)
+    declaration <node> (40)
         on left: 5 6
         on right: 2 3
-    var_declaration <node> (40)
-        on left: 7 8
-        on right: 5 21
-    type_specifier <node> (41)
-        on left: 9 10
-        on right: 7 8 11 18 19
-    fun_declaration <node> (42)
-        on left: 11
+    var_declaration <node> (41)
+        on left: 7 8 9
+        on right: 5 22 42 43
+    type_specifier <node> (42)
+        on left: 10 11
+        on right: 7 8 9 12 19 20
+    fun_declaration <node> (43)
+        on left: 12
         on right: 6
-    comment <node> (43)
-        on left: 12 13
-        on right: 4 12 23
-    params <node> (44)
-        on left: 14 15
-        on right: 11
-    param_list <node> (45)
-        on left: 16 17
-        on right: 14 16
-    param <node> (46)
-        on left: 18 19
-        on right: 16 17
-    compound_stmt <node> (47)
-        on left: 20
-        on right: 11 26
-    local_declarations <node> (48)
-        on left: 21 22
-        on right: 20 21
-    statement_list <node> (49)
-        on left: 23 24
-        on right: 20 23
-    statement <node> (50)
-        on left: 25 26 27 28 29
-        on right: 23 32 33 35
-    expression_stmt <node> (51)
-        on left: 30 31
-        on right: 25
-    selection_stmt <node> (52)
+    comment <node> (44)
+        on left: 13 14
+        on right: 4 13 24
+    params <node> (45)
+        on left: 15 16
+        on right: 12
+    param_list <node> (46)
+        on left: 17 18
+        on right: 15 17
+    param <node> (47)
+        on left: 19 20
+        on right: 17 18
+    compound_stmt <node> (48)
+        on left: 21
+        on right: 12 27
+    local_declarations <node> (49)
+        on left: 22 23
+        on right: 21 22
+    statement_list <node> (50)
+        on left: 24 25
+        on right: 21 24
+    statement <node> (51)
+        on left: 26 27 28 29 30 31
+        on right: 24 34 35 37 38 39 40 41 42 43
+    expression_stmt <node> (52)
         on left: 32 33
-        on right: 27
-    iteration_stmt <node> (53)
-        on left: 35
+        on right: 26
+    selection_stmt <node> (53)
+        on left: 34 35
         on right: 28
-    $@1 (54)
-        on left: 34
-        on right: 35
-    return_stmt <node> (55)
-        on left: 36 37
+    iteration_stmt <node> (54)
+        on left: 37
         on right: 29
-    expression <node> (56)
-        on left: 38 39 40 41 42
-        on right: 30 32 33 35 37 38 44 60 67 68
-    var <node> (57)
-        on left: 43 44
-        on right: 38 61
-    simple_expression <node> (58)
-        on left: 45 46 47 48 49 50 51
-        on right: 39 40 41 42
-    additive_expression <node> (59)
-        on left: 52 53 54
-        on right: 45 46 47 48 49 50 51 52 53
-    term <node> (60)
-        on left: 55 56 57 58 59
-        on right: 52 53 54 55 56 57 58
-    factor <node> (61)
-        on left: 60 61 62 63
-        on right: 55 56 57 58 59
-    call <node> (62)
-        on left: 64
-        on right: 62
-    args <node> (63)
-        on left: 65 66
-        on right: 64
-    arg_list <node> (64)
-        on left: 67 68
-        on right: 65 67
+    $@1 (55)
+        on left: 36
+        on right: 37
+    for_stmt <node> (56)
+        on left: 38 39 40 41 42 43
+        on right: 30
+    return_stmt <node> (57)
+        on left: 44 45
+        on right: 31
+    expression <node> (58)
+        on left: 46 47 48 49 50
+        on right: 9 32 34 35 37 38 39 40 41 42 43 45 46 52 68 75 76
+    var <node> (59)
+        on left: 51 52
+        on right: 46 69
+    simple_expression <node> (60)
+        on left: 53 54 55 56 57 58 59
+        on right: 47 48 49 50
+    additive_expression <node> (61)
+        on left: 60 61 62
+        on right: 53 54 55 56 57 58 59 60 61
+    term <node> (62)
+        on left: 63 64 65 66 67
+        on right: 60 61 62 63 64 65 66
+    factor <node> (63)
+        on left: 68 69 70 71
+        on right: 63 64 65 66 67
+    call <node> (64)
+        on left: 72
+        on right: 70
+    args <node> (65)
+        on left: 73 74
+        on right: 72
+    arg_list <node> (66)
+        on left: 75 76
+        on right: 73 75
 
 
 State 0
@@ -239,9 +252,9 @@ State 0
     KEYWORD_INT   shift, and go to state 1
     KEYWORD_VOID  shift, and go to state 2
 
-    KEYWORD_INT   [reduce using rule 13 (comment)]
-    KEYWORD_VOID  [reduce using rule 13 (comment)]
-    $default      reduce using rule 13 (comment)
+    KEYWORD_INT   [reduce using rule 14 (comment)]
+    KEYWORD_VOID  [reduce using rule 14 (comment)]
+    $default      reduce using rule 14 (comment)
 
     program           go to state 3
     declaration_list  go to state 4
@@ -254,16 +267,16 @@ State 0
 
 State 1
 
-    9 type_specifier: KEYWORD_INT •
+   10 type_specifier: KEYWORD_INT •
 
-    $default  reduce using rule 9 (type_specifier)
+    $default  reduce using rule 10 (type_specifier)
 
 
 State 2
 
-   10 type_specifier: KEYWORD_VOID •
+   11 type_specifier: KEYWORD_VOID •
 
-    $default  reduce using rule 10 (type_specifier)
+    $default  reduce using rule 11 (type_specifier)
 
 
 State 3
@@ -307,7 +320,8 @@ State 7
 
     7 var_declaration: type_specifier • ID ';'
     8                | type_specifier • ID '[' NUM ']' ';'
-   11 fun_declaration: type_specifier • ID '(' params ')' compound_stmt
+    9                | type_specifier • ID '=' expression ';'
+   12 fun_declaration: type_specifier • ID '(' params ')' compound_stmt
 
     ID  shift, and go to state 12
 
@@ -322,7 +336,7 @@ State 8
 State 9
 
     4 declaration_list: comment •
-   12 comment: comment • MULTI_LINE_ANNOTATION
+   13 comment: comment • MULTI_LINE_ANNOTATION
 
     MULTI_LINE_ANNOTATION  shift, and go to state 13
 
@@ -347,18 +361,20 @@ State 12
 
     7 var_declaration: type_specifier ID • ';'
     8                | type_specifier ID • '[' NUM ']' ';'
-   11 fun_declaration: type_specifier ID • '(' params ')' compound_stmt
+    9                | type_specifier ID • '=' expression ';'
+   12 fun_declaration: type_specifier ID • '(' params ')' compound_stmt
 
     ';'  shift, and go to state 14
     '['  shift, and go to state 15
-    '('  shift, and go to state 16
+    '='  shift, and go to state 16
+    '('  shift, and go to state 17
 
 
 State 13
 
-   12 comment: comment MULTI_LINE_ANNOTATION •
+   13 comment: comment MULTI_LINE_ANNOTATION •
 
-    $default  reduce using rule 12 (comment)
+    $default  reduce using rule 13 (comment)
 
 
 State 14
@@ -372,1182 +388,1670 @@ State 15
 
     8 var_declaration: type_specifier ID '[' • NUM ']' ';'
 
-    NUM  shift, and go to state 17
+    NUM  shift, and go to state 18
 
 
 State 16
 
-   11 fun_declaration: type_specifier ID '(' • params ')' compound_stmt
+    9 var_declaration: type_specifier ID '=' • expression ';'
 
-    KEYWORD_INT   shift, and go to state 1
-    KEYWORD_VOID  shift, and go to state 18
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
 
-    type_specifier  go to state 19
-    params          go to state 20
-    param_list      go to state 21
-    param           go to state 22
+    expression           go to state 23
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 17
 
-    8 var_declaration: type_specifier ID '[' NUM • ']' ';'
+   12 fun_declaration: type_specifier ID '(' • params ')' compound_stmt
 
-    ']'  shift, and go to state 23
+    KEYWORD_INT   shift, and go to state 1
+    KEYWORD_VOID  shift, and go to state 30
+
+    type_specifier  go to state 31
+    params          go to state 32
+    param_list      go to state 33
+    param           go to state 34
 
 
 State 18
 
-   10 type_specifier: KEYWORD_VOID •
-   15 params: KEYWORD_VOID •
+    8 var_declaration: type_specifier ID '[' NUM • ']' ';'
 
-    ')'       reduce using rule 15 (params)
-    $default  reduce using rule 10 (type_specifier)
+    ']'  shift, and go to state 35
 
 
 State 19
 
-   18 param: type_specifier • ID
-   19      | type_specifier • ID '[' ']'
+   51 var: ID •
+   52    | ID • '[' expression ']'
+   72 call: ID • '(' args ')'
 
-    ID  shift, and go to state 24
+    '['  shift, and go to state 36
+    '('  shift, and go to state 37
+
+    $default  reduce using rule 51 (var)
 
 
 State 20
 
-   11 fun_declaration: type_specifier ID '(' params • ')' compound_stmt
+   71 factor: NUM •
 
-    ')'  shift, and go to state 25
+    $default  reduce using rule 71 (factor)
 
 
 State 21
 
-   14 params: param_list •
-   16 param_list: param_list • ',' param
+   49 expression: KEYWORD_NO • '(' simple_expression ')'
 
-    ','  shift, and go to state 26
-
-    $default  reduce using rule 14 (params)
+    '('  shift, and go to state 38
 
 
 State 22
 
-   17 param_list: param •
+   68 factor: '(' • expression ')'
 
-    $default  reduce using rule 17 (param_list)
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 39
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 23
 
-    8 var_declaration: type_specifier ID '[' NUM ']' • ';'
+    9 var_declaration: type_specifier ID '=' expression • ';'
 
-    ';'  shift, and go to state 27
+    ';'  shift, and go to state 40
 
 
 State 24
 
-   18 param: type_specifier ID •
-   19      | type_specifier ID • '[' ']'
+   46 expression: var • '=' expression
+   69 factor: var •
 
-    '['  shift, and go to state 28
+    '='  shift, and go to state 41
 
-    $default  reduce using rule 18 (param)
+    $default  reduce using rule 69 (factor)
 
 
 State 25
 
-   11 fun_declaration: type_specifier ID '(' params ')' • compound_stmt
+   47 expression: simple_expression • KEYWORD_AND simple_expression
+   48           | simple_expression • KEYWORD_OR simple_expression
+   50           | simple_expression •
 
-    '{'  shift, and go to state 29
+    KEYWORD_AND  shift, and go to state 42
+    KEYWORD_OR   shift, and go to state 43
 
-    compound_stmt  go to state 30
+    $default  reduce using rule 50 (expression)
 
 
 State 26
 
-   16 param_list: param_list ',' • param
+   53 simple_expression: additive_expression • LESS_EQUAL_THAN additive_expression
+   54                  | additive_expression • LESS_THAN additive_expression
+   55                  | additive_expression • GREAT_THAN additive_expression
+   56                  | additive_expression • GREAT_EQUAL_THAN additive_expression
+   57                  | additive_expression • DOUBLE_EQUAL additive_expression
+   58                  | additive_expression • NOT_EQUAL additive_expression
+   59                  | additive_expression •
+   60 additive_expression: additive_expression • '+' term
+   61                    | additive_expression • '-' term
+
+    LESS_EQUAL_THAN   shift, and go to state 44
+    LESS_THAN         shift, and go to state 45
+    GREAT_THAN        shift, and go to state 46
+    GREAT_EQUAL_THAN  shift, and go to state 47
+    DOUBLE_EQUAL      shift, and go to state 48
+    NOT_EQUAL         shift, and go to state 49
+    '+'               shift, and go to state 50
+    '-'               shift, and go to state 51
+
+    $default  reduce using rule 59 (simple_expression)
+
+
+State 27
+
+   62 additive_expression: term •
+   63 term: term • '^' factor
+   64     | term • '*' factor
+   65     | term • '/' factor
+   66     | term • '%' factor
+
+    '*'  shift, and go to state 52
+    '/'  shift, and go to state 53
+    '^'  shift, and go to state 54
+    '%'  shift, and go to state 55
+
+    $default  reduce using rule 62 (additive_expression)
+
+
+State 28
+
+   67 term: factor •
+
+    $default  reduce using rule 67 (term)
+
+
+State 29
+
+   70 factor: call •
+
+    $default  reduce using rule 70 (factor)
+
+
+State 30
+
+   11 type_specifier: KEYWORD_VOID •
+   16 params: KEYWORD_VOID •
+
+    ')'       reduce using rule 16 (params)
+    $default  reduce using rule 11 (type_specifier)
+
+
+State 31
+
+   19 param: type_specifier • ID
+   20      | type_specifier • ID '[' ']'
+
+    ID  shift, and go to state 56
+
+
+State 32
+
+   12 fun_declaration: type_specifier ID '(' params • ')' compound_stmt
+
+    ')'  shift, and go to state 57
+
+
+State 33
+
+   15 params: param_list •
+   17 param_list: param_list • ',' param
+
+    ','  shift, and go to state 58
+
+    $default  reduce using rule 15 (params)
+
+
+State 34
+
+   18 param_list: param •
+
+    $default  reduce using rule 18 (param_list)
+
+
+State 35
+
+    8 var_declaration: type_specifier ID '[' NUM ']' • ';'
+
+    ';'  shift, and go to state 59
+
+
+State 36
+
+   52 var: ID '[' • expression ']'
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 60
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 37
+
+   72 call: ID '(' • args ')'
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    $default  reduce using rule 74 (args)
+
+    expression           go to state 61
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+    args                 go to state 62
+    arg_list             go to state 63
+
+
+State 38
+
+   49 expression: KEYWORD_NO '(' • simple_expression ')'
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    simple_expression    go to state 65
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 39
+
+   68 factor: '(' expression • ')'
+
+    ')'  shift, and go to state 66
+
+
+State 40
+
+    9 var_declaration: type_specifier ID '=' expression ';' •
+
+    $default  reduce using rule 9 (var_declaration)
+
+
+State 41
+
+   46 expression: var '=' • expression
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 67
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 42
+
+   47 expression: simple_expression KEYWORD_AND • simple_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    simple_expression    go to state 68
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 43
+
+   48 expression: simple_expression KEYWORD_OR • simple_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    simple_expression    go to state 69
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 44
+
+   53 simple_expression: additive_expression LESS_EQUAL_THAN • additive_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    additive_expression  go to state 70
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 45
+
+   54 simple_expression: additive_expression LESS_THAN • additive_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    additive_expression  go to state 71
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 46
+
+   55 simple_expression: additive_expression GREAT_THAN • additive_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    additive_expression  go to state 72
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 47
+
+   56 simple_expression: additive_expression GREAT_EQUAL_THAN • additive_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    additive_expression  go to state 73
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 48
+
+   57 simple_expression: additive_expression DOUBLE_EQUAL • additive_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    additive_expression  go to state 74
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 49
+
+   58 simple_expression: additive_expression NOT_EQUAL • additive_expression
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var                  go to state 64
+    additive_expression  go to state 75
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 50
+
+   60 additive_expression: additive_expression '+' • term
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var     go to state 64
+    term    go to state 76
+    factor  go to state 28
+    call    go to state 29
+
+
+State 51
+
+   61 additive_expression: additive_expression '-' • term
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var     go to state 64
+    term    go to state 77
+    factor  go to state 28
+    call    go to state 29
+
+
+State 52
+
+   64 term: term '*' • factor
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var     go to state 64
+    factor  go to state 78
+    call    go to state 29
+
+
+State 53
+
+   65 term: term '/' • factor
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var     go to state 64
+    factor  go to state 79
+    call    go to state 29
+
+
+State 54
+
+   63 term: term '^' • factor
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var     go to state 64
+    factor  go to state 80
+    call    go to state 29
+
+
+State 55
+
+   66 term: term '%' • factor
+
+    ID   shift, and go to state 19
+    NUM  shift, and go to state 20
+    '('  shift, and go to state 22
+
+    var     go to state 64
+    factor  go to state 81
+    call    go to state 29
+
+
+State 56
+
+   19 param: type_specifier ID •
+   20      | type_specifier ID • '[' ']'
+
+    '['  shift, and go to state 82
+
+    $default  reduce using rule 19 (param)
+
+
+State 57
+
+   12 fun_declaration: type_specifier ID '(' params ')' • compound_stmt
+
+    '{'  shift, and go to state 83
+
+    compound_stmt  go to state 84
+
+
+State 58
+
+   17 param_list: param_list ',' • param
 
     KEYWORD_INT   shift, and go to state 1
     KEYWORD_VOID  shift, and go to state 2
 
-    type_specifier  go to state 19
-    param           go to state 31
+    type_specifier  go to state 31
+    param           go to state 85
 
 
-State 27
+State 59
 
     8 var_declaration: type_specifier ID '[' NUM ']' ';' •
 
     $default  reduce using rule 8 (var_declaration)
 
 
-State 28
-
-   19 param: type_specifier ID '[' • ']'
-
-    ']'  shift, and go to state 32
-
-
-State 29
-
-   20 compound_stmt: '{' • local_declarations statement_list '}'
-
-    $default  reduce using rule 22 (local_declarations)
-
-    local_declarations  go to state 33
-
-
-State 30
-
-   11 fun_declaration: type_specifier ID '(' params ')' compound_stmt •
-
-    $default  reduce using rule 11 (fun_declaration)
-
-
-State 31
-
-   16 param_list: param_list ',' param •
-
-    $default  reduce using rule 16 (param_list)
-
-
-State 32
-
-   19 param: type_specifier ID '[' ']' •
-
-    $default  reduce using rule 19 (param)
-
-
-State 33
-
-   20 compound_stmt: '{' local_declarations • statement_list '}'
-   21 local_declarations: local_declarations • var_declaration
-
-    KEYWORD_INT   shift, and go to state 1
-    KEYWORD_VOID  shift, and go to state 2
-
-    $default  reduce using rule 24 (statement_list)
-
-    var_declaration  go to state 34
-    type_specifier   go to state 35
-    statement_list   go to state 36
-
-
-State 34
-
-   21 local_declarations: local_declarations var_declaration •
-
-    $default  reduce using rule 21 (local_declarations)
-
-
-State 35
-
-    7 var_declaration: type_specifier • ID ';'
-    8                | type_specifier • ID '[' NUM ']' ';'
-
-    ID  shift, and go to state 37
-
-
-State 36
-
-   20 compound_stmt: '{' local_declarations statement_list • '}'
-   23 statement_list: statement_list • statement comment
-
-    ID              shift, and go to state 38
-    NUM             shift, and go to state 39
-    KEYWORD_IF      shift, and go to state 40
-    KEYWORD_RETURN  shift, and go to state 41
-    KEYWORD_WHILE   shift, and go to state 42
-    KEYWORD_NO      shift, and go to state 43
-    ';'             shift, and go to state 44
-    '('             shift, and go to state 45
-    '{'             shift, and go to state 29
-    '}'             shift, and go to state 46
-
-    compound_stmt        go to state 47
-    statement            go to state 48
-    expression_stmt      go to state 49
-    selection_stmt       go to state 50
-    iteration_stmt       go to state 51
-    return_stmt          go to state 52
-    expression           go to state 53
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
-
-
-State 37
-
-    7 var_declaration: type_specifier ID • ';'
-    8                | type_specifier ID • '[' NUM ']' ';'
-
-    ';'  shift, and go to state 14
-    '['  shift, and go to state 15
-
-
-State 38
-
-   43 var: ID •
-   44    | ID • '[' expression ']'
-   64 call: ID • '(' args ')'
-
-    '['  shift, and go to state 60
-    '('  shift, and go to state 61
-
-    $default  reduce using rule 43 (var)
-
-
-State 39
-
-   63 factor: NUM •
-
-    $default  reduce using rule 63 (factor)
-
-
-State 40
-
-   32 selection_stmt: KEYWORD_IF • '(' expression ')' statement
-   33               | KEYWORD_IF • '(' expression ')' statement KEYWORD_ELSE statement
-
-    '('  shift, and go to state 62
-
-
-State 41
-
-   36 return_stmt: KEYWORD_RETURN • ';'
-   37            | KEYWORD_RETURN • expression ';'
-
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    ';'         shift, and go to state 63
-    '('         shift, and go to state 45
-
-    expression           go to state 64
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
-
-
-State 42
-
-   35 iteration_stmt: KEYWORD_WHILE • '(' expression $@1 ')' statement
-
-    '('  shift, and go to state 65
-
-
-State 43
-
-   41 expression: KEYWORD_NO • '(' simple_expression ')'
-
-    '('  shift, and go to state 66
-
-
-State 44
-
-   31 expression_stmt: ';' •
-
-    $default  reduce using rule 31 (expression_stmt)
-
-
-State 45
-
-   60 factor: '(' • expression ')'
-
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    '('         shift, and go to state 45
-
-    expression           go to state 67
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
-
-
-State 46
-
-   20 compound_stmt: '{' local_declarations statement_list '}' •
-
-    $default  reduce using rule 20 (compound_stmt)
-
-
-State 47
-
-   26 statement: compound_stmt •
-
-    $default  reduce using rule 26 (statement)
-
-
-State 48
-
-   23 statement_list: statement_list statement • comment
-
-    $default  reduce using rule 13 (comment)
-
-    comment  go to state 68
-
-
-State 49
-
-   25 statement: expression_stmt •
-
-    $default  reduce using rule 25 (statement)
-
-
-State 50
-
-   27 statement: selection_stmt •
-
-    $default  reduce using rule 27 (statement)
-
-
-State 51
-
-   28 statement: iteration_stmt •
-
-    $default  reduce using rule 28 (statement)
-
-
-State 52
-
-   29 statement: return_stmt •
-
-    $default  reduce using rule 29 (statement)
-
-
-State 53
-
-   30 expression_stmt: expression • ';'
-
-    ';'  shift, and go to state 69
-
-
-State 54
-
-   38 expression: var • '=' expression
-   61 factor: var •
-
-    '='  shift, and go to state 70
-
-    $default  reduce using rule 61 (factor)
-
-
-State 55
-
-   39 expression: simple_expression • KEYWORD_AND simple_expression
-   40           | simple_expression • KEYWORD_OR simple_expression
-   42           | simple_expression •
-
-    KEYWORD_AND  shift, and go to state 71
-    KEYWORD_OR   shift, and go to state 72
-
-    $default  reduce using rule 42 (expression)
-
-
-State 56
-
-   45 simple_expression: additive_expression • LESS_EQUAL_THAN additive_expression
-   46                  | additive_expression • LESS_THAN additive_expression
-   47                  | additive_expression • GREAT_THAN additive_expression
-   48                  | additive_expression • GREAT_EQUAL_THAN additive_expression
-   49                  | additive_expression • DOUBLE_EQUAL additive_expression
-   50                  | additive_expression • NOT_EQUAL additive_expression
-   51                  | additive_expression •
-   52 additive_expression: additive_expression • '+' term
-   53                    | additive_expression • '-' term
-
-    LESS_EQUAL_THAN   shift, and go to state 73
-    LESS_THAN         shift, and go to state 74
-    GREAT_THAN        shift, and go to state 75
-    GREAT_EQUAL_THAN  shift, and go to state 76
-    DOUBLE_EQUAL      shift, and go to state 77
-    NOT_EQUAL         shift, and go to state 78
-    '+'               shift, and go to state 79
-    '-'               shift, and go to state 80
-
-    $default  reduce using rule 51 (simple_expression)
-
-
-State 57
-
-   54 additive_expression: term •
-   55 term: term • '^' factor
-   56     | term • '*' factor
-   57     | term • '/' factor
-   58     | term • '%' factor
-
-    '*'  shift, and go to state 81
-    '/'  shift, and go to state 82
-    '^'  shift, and go to state 83
-    '%'  shift, and go to state 84
-
-    $default  reduce using rule 54 (additive_expression)
-
-
-State 58
-
-   59 term: factor •
-
-    $default  reduce using rule 59 (term)
-
-
-State 59
-
-   62 factor: call •
-
-    $default  reduce using rule 62 (factor)
-
-
 State 60
 
-   44 var: ID '[' • expression ']'
+   52 var: ID '[' expression • ']'
 
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    '('         shift, and go to state 45
-
-    expression           go to state 85
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    ']'  shift, and go to state 86
 
 
 State 61
 
-   64 call: ID '(' • args ')'
+   76 arg_list: expression •
 
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    '('         shift, and go to state 45
-
-    $default  reduce using rule 66 (args)
-
-    expression           go to state 86
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
-    args                 go to state 87
-    arg_list             go to state 88
+    $default  reduce using rule 76 (arg_list)
 
 
 State 62
 
-   32 selection_stmt: KEYWORD_IF '(' • expression ')' statement
-   33               | KEYWORD_IF '(' • expression ')' statement KEYWORD_ELSE statement
+   72 call: ID '(' args • ')'
 
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    '('         shift, and go to state 45
-
-    expression           go to state 89
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    ')'  shift, and go to state 87
 
 
 State 63
 
-   36 return_stmt: KEYWORD_RETURN ';' •
+   73 args: arg_list •
+   75 arg_list: arg_list • ',' expression
 
-    $default  reduce using rule 36 (return_stmt)
+    ','  shift, and go to state 88
+
+    $default  reduce using rule 73 (args)
 
 
 State 64
 
-   37 return_stmt: KEYWORD_RETURN expression • ';'
+   69 factor: var •
 
-    ';'  shift, and go to state 90
+    $default  reduce using rule 69 (factor)
 
 
 State 65
 
-   35 iteration_stmt: KEYWORD_WHILE '(' • expression $@1 ')' statement
+   49 expression: KEYWORD_NO '(' simple_expression • ')'
 
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    '('         shift, and go to state 45
-
-    expression           go to state 91
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    ')'  shift, and go to state 89
 
 
 State 66
 
-   41 expression: KEYWORD_NO '(' • simple_expression ')'
+   68 factor: '(' expression ')' •
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
-
-    var                  go to state 92
-    simple_expression    go to state 93
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 68 (factor)
 
 
 State 67
 
-   60 factor: '(' expression • ')'
+   46 expression: var '=' expression •
 
-    ')'  shift, and go to state 94
+    $default  reduce using rule 46 (expression)
 
 
 State 68
 
-   12 comment: comment • MULTI_LINE_ANNOTATION
-   23 statement_list: statement_list statement comment •
+   47 expression: simple_expression KEYWORD_AND simple_expression •
 
-    MULTI_LINE_ANNOTATION  shift, and go to state 13
-
-    $default  reduce using rule 23 (statement_list)
+    $default  reduce using rule 47 (expression)
 
 
 State 69
 
-   30 expression_stmt: expression ';' •
+   48 expression: simple_expression KEYWORD_OR simple_expression •
 
-    $default  reduce using rule 30 (expression_stmt)
+    $default  reduce using rule 48 (expression)
 
 
 State 70
 
-   38 expression: var '=' • expression
+   53 simple_expression: additive_expression LESS_EQUAL_THAN additive_expression •
+   60 additive_expression: additive_expression • '+' term
+   61                    | additive_expression • '-' term
 
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    '('         shift, and go to state 45
+    '+'  shift, and go to state 50
+    '-'  shift, and go to state 51
 
-    expression           go to state 95
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 53 (simple_expression)
 
 
 State 71
 
-   39 expression: simple_expression KEYWORD_AND • simple_expression
+   54 simple_expression: additive_expression LESS_THAN additive_expression •
+   60 additive_expression: additive_expression • '+' term
+   61                    | additive_expression • '-' term
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    '+'  shift, and go to state 50
+    '-'  shift, and go to state 51
 
-    var                  go to state 92
-    simple_expression    go to state 96
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 54 (simple_expression)
 
 
 State 72
 
-   40 expression: simple_expression KEYWORD_OR • simple_expression
+   55 simple_expression: additive_expression GREAT_THAN additive_expression •
+   60 additive_expression: additive_expression • '+' term
+   61                    | additive_expression • '-' term
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    '+'  shift, and go to state 50
+    '-'  shift, and go to state 51
 
-    var                  go to state 92
-    simple_expression    go to state 97
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 55 (simple_expression)
 
 
 State 73
 
-   45 simple_expression: additive_expression LESS_EQUAL_THAN • additive_expression
+   56 simple_expression: additive_expression GREAT_EQUAL_THAN additive_expression •
+   60 additive_expression: additive_expression • '+' term
+   61                    | additive_expression • '-' term
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    '+'  shift, and go to state 50
+    '-'  shift, and go to state 51
 
-    var                  go to state 92
-    additive_expression  go to state 98
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 56 (simple_expression)
 
 
 State 74
 
-   46 simple_expression: additive_expression LESS_THAN • additive_expression
+   57 simple_expression: additive_expression DOUBLE_EQUAL additive_expression •
+   60 additive_expression: additive_expression • '+' term
+   61                    | additive_expression • '-' term
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    '+'  shift, and go to state 50
+    '-'  shift, and go to state 51
 
-    var                  go to state 92
-    additive_expression  go to state 99
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 57 (simple_expression)
 
 
 State 75
 
-   47 simple_expression: additive_expression GREAT_THAN • additive_expression
+   58 simple_expression: additive_expression NOT_EQUAL additive_expression •
+   60 additive_expression: additive_expression • '+' term
+   61                    | additive_expression • '-' term
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    '+'  shift, and go to state 50
+    '-'  shift, and go to state 51
 
-    var                  go to state 92
-    additive_expression  go to state 100
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 58 (simple_expression)
 
 
 State 76
 
-   48 simple_expression: additive_expression GREAT_EQUAL_THAN • additive_expression
+   60 additive_expression: additive_expression '+' term •
+   63 term: term • '^' factor
+   64     | term • '*' factor
+   65     | term • '/' factor
+   66     | term • '%' factor
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    '*'  shift, and go to state 52
+    '/'  shift, and go to state 53
+    '^'  shift, and go to state 54
+    '%'  shift, and go to state 55
 
-    var                  go to state 92
-    additive_expression  go to state 101
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 60 (additive_expression)
 
 
 State 77
 
-   49 simple_expression: additive_expression DOUBLE_EQUAL • additive_expression
+   61 additive_expression: additive_expression '-' term •
+   63 term: term • '^' factor
+   64     | term • '*' factor
+   65     | term • '/' factor
+   66     | term • '%' factor
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    '*'  shift, and go to state 52
+    '/'  shift, and go to state 53
+    '^'  shift, and go to state 54
+    '%'  shift, and go to state 55
 
-    var                  go to state 92
-    additive_expression  go to state 102
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 61 (additive_expression)
 
 
 State 78
 
-   50 simple_expression: additive_expression NOT_EQUAL • additive_expression
+   64 term: term '*' factor •
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
-
-    var                  go to state 92
-    additive_expression  go to state 103
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 64 (term)
 
 
 State 79
 
-   52 additive_expression: additive_expression '+' • term
+   65 term: term '/' factor •
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
-
-    var     go to state 92
-    term    go to state 104
-    factor  go to state 58
-    call    go to state 59
+    $default  reduce using rule 65 (term)
 
 
 State 80
 
-   53 additive_expression: additive_expression '-' • term
+   63 term: term '^' factor •
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
-
-    var     go to state 92
-    term    go to state 105
-    factor  go to state 58
-    call    go to state 59
+    $default  reduce using rule 63 (term)
 
 
 State 81
 
-   56 term: term '*' • factor
+   66 term: term '%' factor •
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
-
-    var     go to state 92
-    factor  go to state 106
-    call    go to state 59
+    $default  reduce using rule 66 (term)
 
 
 State 82
 
-   57 term: term '/' • factor
+   20 param: type_specifier ID '[' • ']'
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
-
-    var     go to state 92
-    factor  go to state 107
-    call    go to state 59
+    ']'  shift, and go to state 90
 
 
 State 83
 
-   55 term: term '^' • factor
+   21 compound_stmt: '{' • local_declarations statement_list '}'
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
+    $default  reduce using rule 23 (local_declarations)
 
-    var     go to state 92
-    factor  go to state 108
-    call    go to state 59
+    local_declarations  go to state 91
 
 
 State 84
 
-   58 term: term '%' • factor
+   12 fun_declaration: type_specifier ID '(' params ')' compound_stmt •
 
-    ID   shift, and go to state 38
-    NUM  shift, and go to state 39
-    '('  shift, and go to state 45
-
-    var     go to state 92
-    factor  go to state 109
-    call    go to state 59
+    $default  reduce using rule 12 (fun_declaration)
 
 
 State 85
 
-   44 var: ID '[' expression • ']'
+   17 param_list: param_list ',' param •
 
-    ']'  shift, and go to state 110
+    $default  reduce using rule 17 (param_list)
 
 
 State 86
 
-   68 arg_list: expression •
+   52 var: ID '[' expression ']' •
 
-    $default  reduce using rule 68 (arg_list)
+    $default  reduce using rule 52 (var)
 
 
 State 87
 
-   64 call: ID '(' args • ')'
+   72 call: ID '(' args ')' •
 
-    ')'  shift, and go to state 111
+    $default  reduce using rule 72 (call)
 
 
 State 88
 
-   65 args: arg_list •
-   67 arg_list: arg_list • ',' expression
+   75 arg_list: arg_list ',' • expression
 
-    ','  shift, and go to state 112
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
 
-    $default  reduce using rule 65 (args)
+    expression           go to state 92
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 89
 
-   32 selection_stmt: KEYWORD_IF '(' expression • ')' statement
-   33               | KEYWORD_IF '(' expression • ')' statement KEYWORD_ELSE statement
+   49 expression: KEYWORD_NO '(' simple_expression ')' •
 
-    ')'  shift, and go to state 113
+    $default  reduce using rule 49 (expression)
 
 
 State 90
 
-   37 return_stmt: KEYWORD_RETURN expression ';' •
+   20 param: type_specifier ID '[' ']' •
 
-    $default  reduce using rule 37 (return_stmt)
+    $default  reduce using rule 20 (param)
 
 
 State 91
 
-   35 iteration_stmt: KEYWORD_WHILE '(' expression • $@1 ')' statement
+   21 compound_stmt: '{' local_declarations • statement_list '}'
+   22 local_declarations: local_declarations • var_declaration
 
-    $default  reduce using rule 34 ($@1)
+    KEYWORD_INT   shift, and go to state 1
+    KEYWORD_VOID  shift, and go to state 2
 
-    $@1  go to state 114
+    $default  reduce using rule 25 (statement_list)
+
+    var_declaration  go to state 93
+    type_specifier   go to state 94
+    statement_list   go to state 95
 
 
 State 92
 
-   61 factor: var •
+   75 arg_list: arg_list ',' expression •
 
-    $default  reduce using rule 61 (factor)
+    $default  reduce using rule 75 (arg_list)
 
 
 State 93
 
-   41 expression: KEYWORD_NO '(' simple_expression • ')'
+   22 local_declarations: local_declarations var_declaration •
 
-    ')'  shift, and go to state 115
+    $default  reduce using rule 22 (local_declarations)
 
 
 State 94
 
-   60 factor: '(' expression ')' •
+    7 var_declaration: type_specifier • ID ';'
+    8                | type_specifier • ID '[' NUM ']' ';'
+    9                | type_specifier • ID '=' expression ';'
 
-    $default  reduce using rule 60 (factor)
+    ID  shift, and go to state 96
 
 
 State 95
 
-   38 expression: var '=' expression •
+   21 compound_stmt: '{' local_declarations statement_list • '}'
+   24 statement_list: statement_list • statement comment
 
-    $default  reduce using rule 38 (expression)
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+    '}'             shift, and go to state 102
+
+    compound_stmt        go to state 103
+    statement            go to state 104
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 96
 
-   39 expression: simple_expression KEYWORD_AND simple_expression •
+    7 var_declaration: type_specifier ID • ';'
+    8                | type_specifier ID • '[' NUM ']' ';'
+    9                | type_specifier ID • '=' expression ';'
 
-    $default  reduce using rule 39 (expression)
+    ';'  shift, and go to state 14
+    '['  shift, and go to state 15
+    '='  shift, and go to state 16
 
 
 State 97
 
-   40 expression: simple_expression KEYWORD_OR simple_expression •
+   34 selection_stmt: KEYWORD_IF • '(' expression ')' statement
+   35               | KEYWORD_IF • '(' expression ')' statement KEYWORD_ELSE statement
 
-    $default  reduce using rule 40 (expression)
+    '('  shift, and go to state 111
 
 
 State 98
 
-   45 simple_expression: additive_expression LESS_EQUAL_THAN additive_expression •
-   52 additive_expression: additive_expression • '+' term
-   53                    | additive_expression • '-' term
+   44 return_stmt: KEYWORD_RETURN • ';'
+   45            | KEYWORD_RETURN • expression ';'
 
-    '+'  shift, and go to state 79
-    '-'  shift, and go to state 80
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    ';'         shift, and go to state 112
+    '('         shift, and go to state 22
 
-    $default  reduce using rule 45 (simple_expression)
+    expression           go to state 113
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 99
 
-   46 simple_expression: additive_expression LESS_THAN additive_expression •
-   52 additive_expression: additive_expression • '+' term
-   53                    | additive_expression • '-' term
+   37 iteration_stmt: KEYWORD_WHILE • '(' expression $@1 ')' statement
 
-    '+'  shift, and go to state 79
-    '-'  shift, and go to state 80
-
-    $default  reduce using rule 46 (simple_expression)
+    '('  shift, and go to state 114
 
 
 State 100
 
-   47 simple_expression: additive_expression GREAT_THAN additive_expression •
-   52 additive_expression: additive_expression • '+' term
-   53                    | additive_expression • '-' term
+   38 for_stmt: KEYWORD_FOR • '(' ';' expression ';' ')' statement
+   39         | KEYWORD_FOR • '(' expression ';' expression ';' ')' statement
+   40         | KEYWORD_FOR • '(' expression ';' expression ';' expression ')' statement
+   41         | KEYWORD_FOR • '(' ';' expression ';' expression ')' statement
+   42         | KEYWORD_FOR • '(' var_declaration expression ';' expression ')' statement
+   43         | KEYWORD_FOR • '(' var_declaration expression ';' ')' statement
 
-    '+'  shift, and go to state 79
-    '-'  shift, and go to state 80
-
-    $default  reduce using rule 47 (simple_expression)
+    '('  shift, and go to state 115
 
 
 State 101
 
-   48 simple_expression: additive_expression GREAT_EQUAL_THAN additive_expression •
-   52 additive_expression: additive_expression • '+' term
-   53                    | additive_expression • '-' term
+   33 expression_stmt: ';' •
 
-    '+'  shift, and go to state 79
-    '-'  shift, and go to state 80
-
-    $default  reduce using rule 48 (simple_expression)
+    $default  reduce using rule 33 (expression_stmt)
 
 
 State 102
 
-   49 simple_expression: additive_expression DOUBLE_EQUAL additive_expression •
-   52 additive_expression: additive_expression • '+' term
-   53                    | additive_expression • '-' term
+   21 compound_stmt: '{' local_declarations statement_list '}' •
 
-    '+'  shift, and go to state 79
-    '-'  shift, and go to state 80
-
-    $default  reduce using rule 49 (simple_expression)
+    $default  reduce using rule 21 (compound_stmt)
 
 
 State 103
 
-   50 simple_expression: additive_expression NOT_EQUAL additive_expression •
-   52 additive_expression: additive_expression • '+' term
-   53                    | additive_expression • '-' term
+   27 statement: compound_stmt •
 
-    '+'  shift, and go to state 79
-    '-'  shift, and go to state 80
-
-    $default  reduce using rule 50 (simple_expression)
+    $default  reduce using rule 27 (statement)
 
 
 State 104
 
-   52 additive_expression: additive_expression '+' term •
-   55 term: term • '^' factor
-   56     | term • '*' factor
-   57     | term • '/' factor
-   58     | term • '%' factor
+   24 statement_list: statement_list statement • comment
 
-    '*'  shift, and go to state 81
-    '/'  shift, and go to state 82
-    '^'  shift, and go to state 83
-    '%'  shift, and go to state 84
+    $default  reduce using rule 14 (comment)
 
-    $default  reduce using rule 52 (additive_expression)
+    comment  go to state 116
 
 
 State 105
 
-   53 additive_expression: additive_expression '-' term •
-   55 term: term • '^' factor
-   56     | term • '*' factor
-   57     | term • '/' factor
-   58     | term • '%' factor
+   26 statement: expression_stmt •
 
-    '*'  shift, and go to state 81
-    '/'  shift, and go to state 82
-    '^'  shift, and go to state 83
-    '%'  shift, and go to state 84
-
-    $default  reduce using rule 53 (additive_expression)
+    $default  reduce using rule 26 (statement)
 
 
 State 106
 
-   56 term: term '*' factor •
+   28 statement: selection_stmt •
 
-    $default  reduce using rule 56 (term)
+    $default  reduce using rule 28 (statement)
 
 
 State 107
 
-   57 term: term '/' factor •
+   29 statement: iteration_stmt •
 
-    $default  reduce using rule 57 (term)
+    $default  reduce using rule 29 (statement)
 
 
 State 108
 
-   55 term: term '^' factor •
+   30 statement: for_stmt •
 
-    $default  reduce using rule 55 (term)
+    $default  reduce using rule 30 (statement)
 
 
 State 109
 
-   58 term: term '%' factor •
+   31 statement: return_stmt •
 
-    $default  reduce using rule 58 (term)
+    $default  reduce using rule 31 (statement)
 
 
 State 110
 
-   44 var: ID '[' expression ']' •
+   32 expression_stmt: expression • ';'
 
-    $default  reduce using rule 44 (var)
+    ';'  shift, and go to state 117
 
 
 State 111
 
-   64 call: ID '(' args ')' •
+   34 selection_stmt: KEYWORD_IF '(' • expression ')' statement
+   35               | KEYWORD_IF '(' • expression ')' statement KEYWORD_ELSE statement
 
-    $default  reduce using rule 64 (call)
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 118
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 112
 
-   67 arg_list: arg_list ',' • expression
+   44 return_stmt: KEYWORD_RETURN ';' •
 
-    ID          shift, and go to state 38
-    NUM         shift, and go to state 39
-    KEYWORD_NO  shift, and go to state 43
-    '('         shift, and go to state 45
-
-    expression           go to state 116
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 44 (return_stmt)
 
 
 State 113
 
-   32 selection_stmt: KEYWORD_IF '(' expression ')' • statement
-   33               | KEYWORD_IF '(' expression ')' • statement KEYWORD_ELSE statement
+   45 return_stmt: KEYWORD_RETURN expression • ';'
 
-    ID              shift, and go to state 38
-    NUM             shift, and go to state 39
-    KEYWORD_IF      shift, and go to state 40
-    KEYWORD_RETURN  shift, and go to state 41
-    KEYWORD_WHILE   shift, and go to state 42
-    KEYWORD_NO      shift, and go to state 43
-    ';'             shift, and go to state 44
-    '('             shift, and go to state 45
-    '{'             shift, and go to state 29
-
-    compound_stmt        go to state 47
-    statement            go to state 117
-    expression_stmt      go to state 49
-    selection_stmt       go to state 50
-    iteration_stmt       go to state 51
-    return_stmt          go to state 52
-    expression           go to state 53
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    ';'  shift, and go to state 119
 
 
 State 114
 
-   35 iteration_stmt: KEYWORD_WHILE '(' expression $@1 • ')' statement
+   37 iteration_stmt: KEYWORD_WHILE '(' • expression $@1 ')' statement
 
-    ')'  shift, and go to state 118
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 120
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 115
 
-   41 expression: KEYWORD_NO '(' simple_expression ')' •
+   38 for_stmt: KEYWORD_FOR '(' • ';' expression ';' ')' statement
+   39         | KEYWORD_FOR '(' • expression ';' expression ';' ')' statement
+   40         | KEYWORD_FOR '(' • expression ';' expression ';' expression ')' statement
+   41         | KEYWORD_FOR '(' • ';' expression ';' expression ')' statement
+   42         | KEYWORD_FOR '(' • var_declaration expression ';' expression ')' statement
+   43         | KEYWORD_FOR '(' • var_declaration expression ';' ')' statement
 
-    $default  reduce using rule 41 (expression)
+    ID            shift, and go to state 19
+    NUM           shift, and go to state 20
+    KEYWORD_INT   shift, and go to state 1
+    KEYWORD_VOID  shift, and go to state 2
+    KEYWORD_NO    shift, and go to state 21
+    ';'           shift, and go to state 121
+    '('           shift, and go to state 22
+
+    var_declaration      go to state 122
+    type_specifier       go to state 94
+    expression           go to state 123
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
 
 
 State 116
 
-   67 arg_list: arg_list ',' expression •
+   13 comment: comment • MULTI_LINE_ANNOTATION
+   24 statement_list: statement_list statement comment •
 
-    $default  reduce using rule 67 (arg_list)
+    MULTI_LINE_ANNOTATION  shift, and go to state 13
+
+    $default  reduce using rule 24 (statement_list)
 
 
 State 117
 
-   32 selection_stmt: KEYWORD_IF '(' expression ')' statement •
-   33               | KEYWORD_IF '(' expression ')' statement • KEYWORD_ELSE statement
+   32 expression_stmt: expression ';' •
 
-    KEYWORD_ELSE  shift, and go to state 119
-
-    KEYWORD_ELSE  [reduce using rule 32 (selection_stmt)]
-    $default      reduce using rule 32 (selection_stmt)
+    $default  reduce using rule 32 (expression_stmt)
 
 
 State 118
 
-   35 iteration_stmt: KEYWORD_WHILE '(' expression $@1 ')' • statement
+   34 selection_stmt: KEYWORD_IF '(' expression • ')' statement
+   35               | KEYWORD_IF '(' expression • ')' statement KEYWORD_ELSE statement
 
-    ID              shift, and go to state 38
-    NUM             shift, and go to state 39
-    KEYWORD_IF      shift, and go to state 40
-    KEYWORD_RETURN  shift, and go to state 41
-    KEYWORD_WHILE   shift, and go to state 42
-    KEYWORD_NO      shift, and go to state 43
-    ';'             shift, and go to state 44
-    '('             shift, and go to state 45
-    '{'             shift, and go to state 29
-
-    compound_stmt        go to state 47
-    statement            go to state 120
-    expression_stmt      go to state 49
-    selection_stmt       go to state 50
-    iteration_stmt       go to state 51
-    return_stmt          go to state 52
-    expression           go to state 53
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    ')'  shift, and go to state 124
 
 
 State 119
 
-   33 selection_stmt: KEYWORD_IF '(' expression ')' statement KEYWORD_ELSE • statement
+   45 return_stmt: KEYWORD_RETURN expression ';' •
 
-    ID              shift, and go to state 38
-    NUM             shift, and go to state 39
-    KEYWORD_IF      shift, and go to state 40
-    KEYWORD_RETURN  shift, and go to state 41
-    KEYWORD_WHILE   shift, and go to state 42
-    KEYWORD_NO      shift, and go to state 43
-    ';'             shift, and go to state 44
-    '('             shift, and go to state 45
-    '{'             shift, and go to state 29
-
-    compound_stmt        go to state 47
-    statement            go to state 121
-    expression_stmt      go to state 49
-    selection_stmt       go to state 50
-    iteration_stmt       go to state 51
-    return_stmt          go to state 52
-    expression           go to state 53
-    var                  go to state 54
-    simple_expression    go to state 55
-    additive_expression  go to state 56
-    term                 go to state 57
-    factor               go to state 58
-    call                 go to state 59
+    $default  reduce using rule 45 (return_stmt)
 
 
 State 120
 
-   35 iteration_stmt: KEYWORD_WHILE '(' expression $@1 ')' statement •
+   37 iteration_stmt: KEYWORD_WHILE '(' expression • $@1 ')' statement
 
-    $default  reduce using rule 35 (iteration_stmt)
+    $default  reduce using rule 36 ($@1)
+
+    $@1  go to state 125
 
 
 State 121
 
-   33 selection_stmt: KEYWORD_IF '(' expression ')' statement KEYWORD_ELSE statement •
+   38 for_stmt: KEYWORD_FOR '(' ';' • expression ';' ')' statement
+   41         | KEYWORD_FOR '(' ';' • expression ';' expression ')' statement
 
-    $default  reduce using rule 33 (selection_stmt)
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 126
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 122
+
+   42 for_stmt: KEYWORD_FOR '(' var_declaration • expression ';' expression ')' statement
+   43         | KEYWORD_FOR '(' var_declaration • expression ';' ')' statement
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 127
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 123
+
+   39 for_stmt: KEYWORD_FOR '(' expression • ';' expression ';' ')' statement
+   40         | KEYWORD_FOR '(' expression • ';' expression ';' expression ')' statement
+
+    ';'  shift, and go to state 128
+
+
+State 124
+
+   34 selection_stmt: KEYWORD_IF '(' expression ')' • statement
+   35               | KEYWORD_IF '(' expression ')' • statement KEYWORD_ELSE statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 129
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 125
+
+   37 iteration_stmt: KEYWORD_WHILE '(' expression $@1 • ')' statement
+
+    ')'  shift, and go to state 130
+
+
+State 126
+
+   38 for_stmt: KEYWORD_FOR '(' ';' expression • ';' ')' statement
+   41         | KEYWORD_FOR '(' ';' expression • ';' expression ')' statement
+
+    ';'  shift, and go to state 131
+
+
+State 127
+
+   42 for_stmt: KEYWORD_FOR '(' var_declaration expression • ';' expression ')' statement
+   43         | KEYWORD_FOR '(' var_declaration expression • ';' ')' statement
+
+    ';'  shift, and go to state 132
+
+
+State 128
+
+   39 for_stmt: KEYWORD_FOR '(' expression ';' • expression ';' ')' statement
+   40         | KEYWORD_FOR '(' expression ';' • expression ';' expression ')' statement
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+
+    expression           go to state 133
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 129
+
+   34 selection_stmt: KEYWORD_IF '(' expression ')' statement •
+   35               | KEYWORD_IF '(' expression ')' statement • KEYWORD_ELSE statement
+
+    KEYWORD_ELSE  shift, and go to state 134
+
+    KEYWORD_ELSE  [reduce using rule 34 (selection_stmt)]
+    $default      reduce using rule 34 (selection_stmt)
+
+
+State 130
+
+   37 iteration_stmt: KEYWORD_WHILE '(' expression $@1 ')' • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 135
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 131
+
+   38 for_stmt: KEYWORD_FOR '(' ';' expression ';' • ')' statement
+   41         | KEYWORD_FOR '(' ';' expression ';' • expression ')' statement
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+    ')'         shift, and go to state 136
+
+    expression           go to state 137
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 132
+
+   42 for_stmt: KEYWORD_FOR '(' var_declaration expression ';' • expression ')' statement
+   43         | KEYWORD_FOR '(' var_declaration expression ';' • ')' statement
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+    ')'         shift, and go to state 138
+
+    expression           go to state 139
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 133
+
+   39 for_stmt: KEYWORD_FOR '(' expression ';' expression • ';' ')' statement
+   40         | KEYWORD_FOR '(' expression ';' expression • ';' expression ')' statement
+
+    ';'  shift, and go to state 140
+
+
+State 134
+
+   35 selection_stmt: KEYWORD_IF '(' expression ')' statement KEYWORD_ELSE • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 141
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 135
+
+   37 iteration_stmt: KEYWORD_WHILE '(' expression $@1 ')' statement •
+
+    $default  reduce using rule 37 (iteration_stmt)
+
+
+State 136
+
+   38 for_stmt: KEYWORD_FOR '(' ';' expression ';' ')' • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 142
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 137
+
+   41 for_stmt: KEYWORD_FOR '(' ';' expression ';' expression • ')' statement
+
+    ')'  shift, and go to state 143
+
+
+State 138
+
+   43 for_stmt: KEYWORD_FOR '(' var_declaration expression ';' ')' • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 144
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 139
+
+   42 for_stmt: KEYWORD_FOR '(' var_declaration expression ';' expression • ')' statement
+
+    ')'  shift, and go to state 145
+
+
+State 140
+
+   39 for_stmt: KEYWORD_FOR '(' expression ';' expression ';' • ')' statement
+   40         | KEYWORD_FOR '(' expression ';' expression ';' • expression ')' statement
+
+    ID          shift, and go to state 19
+    NUM         shift, and go to state 20
+    KEYWORD_NO  shift, and go to state 21
+    '('         shift, and go to state 22
+    ')'         shift, and go to state 146
+
+    expression           go to state 147
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 141
+
+   35 selection_stmt: KEYWORD_IF '(' expression ')' statement KEYWORD_ELSE statement •
+
+    $default  reduce using rule 35 (selection_stmt)
+
+
+State 142
+
+   38 for_stmt: KEYWORD_FOR '(' ';' expression ';' ')' statement •
+
+    $default  reduce using rule 38 (for_stmt)
+
+
+State 143
+
+   41 for_stmt: KEYWORD_FOR '(' ';' expression ';' expression ')' • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 148
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 144
+
+   43 for_stmt: KEYWORD_FOR '(' var_declaration expression ';' ')' statement •
+
+    $default  reduce using rule 43 (for_stmt)
+
+
+State 145
+
+   42 for_stmt: KEYWORD_FOR '(' var_declaration expression ';' expression ')' • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 149
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 146
+
+   39 for_stmt: KEYWORD_FOR '(' expression ';' expression ';' ')' • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 150
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 147
+
+   40 for_stmt: KEYWORD_FOR '(' expression ';' expression ';' expression • ')' statement
+
+    ')'  shift, and go to state 151
+
+
+State 148
+
+   41 for_stmt: KEYWORD_FOR '(' ';' expression ';' expression ')' statement •
+
+    $default  reduce using rule 41 (for_stmt)
+
+
+State 149
+
+   42 for_stmt: KEYWORD_FOR '(' var_declaration expression ';' expression ')' statement •
+
+    $default  reduce using rule 42 (for_stmt)
+
+
+State 150
+
+   39 for_stmt: KEYWORD_FOR '(' expression ';' expression ';' ')' statement •
+
+    $default  reduce using rule 39 (for_stmt)
+
+
+State 151
+
+   40 for_stmt: KEYWORD_FOR '(' expression ';' expression ';' expression ')' • statement
+
+    ID              shift, and go to state 19
+    NUM             shift, and go to state 20
+    KEYWORD_IF      shift, and go to state 97
+    KEYWORD_RETURN  shift, and go to state 98
+    KEYWORD_WHILE   shift, and go to state 99
+    KEYWORD_NO      shift, and go to state 21
+    KEYWORD_FOR     shift, and go to state 100
+    ';'             shift, and go to state 101
+    '('             shift, and go to state 22
+    '{'             shift, and go to state 83
+
+    compound_stmt        go to state 103
+    statement            go to state 152
+    expression_stmt      go to state 105
+    selection_stmt       go to state 106
+    iteration_stmt       go to state 107
+    for_stmt             go to state 108
+    return_stmt          go to state 109
+    expression           go to state 110
+    var                  go to state 24
+    simple_expression    go to state 25
+    additive_expression  go to state 26
+    term                 go to state 27
+    factor               go to state 28
+    call                 go to state 29
+
+
+State 152
+
+   40 for_stmt: KEYWORD_FOR '(' expression ';' expression ';' expression ')' statement •
+
+    $default  reduce using rule 40 (for_stmt)

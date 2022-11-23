@@ -17,5 +17,8 @@ int main(void)
 	d = b/(0-a);
 	e = b%a;
 	f = i ^ j;
+	for (int z = 0; z < 10; z = z + 1 ) {
+		f = z * 5;
+	}
 	return;
 }

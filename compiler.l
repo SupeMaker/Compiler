@@ -26,6 +26,7 @@ NUM        {digit}{digit}*
 "return"                                        { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_RETURN; }
 "void"                                          { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_VOID; }
 "while"                                         { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_WHILE; }
+"for"                                           { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_FOR; }
 "<"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return LESS_THAN; }
 "<="                                            { printf("%s", yytext); yylval.name = strdup(yytext); return LESS_EQUAL_THAN; }
 ">"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return GREAT_THAN; }
@@ -37,7 +38,7 @@ NUM        {digit}{digit}*
 "!"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_NO; }
 {id}                                            { printf("%s", yytext); yylval.name = strdup(yytext); return ID; }
 {NUM}                                           { printf("%s", yytext); yylval.name = strdup(yytext); return NUM; }
-"/*"[^*]*"*/"|"/*"[^*]*"*/"\n                                   { printf("%s", yytext); return MULTI_LINE_ANNOTATION; }
+"/*"[^*]*"*/"|"/*"[^*]*"*/"\n                   { printf("%s", yytext); return MULTI_LINE_ANNOTATION; }
 .                                               { printf("%s", yytext); return 0; }
 
 %%

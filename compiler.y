@@ -17,9 +17,9 @@ int yylex();
 
 %token<name> ID NUM LESS_EQUAL_THAN LESS_THAN GREAT_THAN GREAT_EQUAL_THAN DOUBLE_EQUAL NOT_EQUAL
 %token<name> KEYWORD_ELSE KEYWORD_IF KEYWORD_INT KEYWORD_RETURN KEYWORD_VOID KEYWORD_WHILE MULTI_LINE_ANNOTATION
-%token<name> KEYWORD_AND KEYWORD_OR KEYWORD_NO
+%token<name> KEYWORD_AND KEYWORD_OR KEYWORD_NO KEYWORD_FOR
 %type<node> program comment declaration_list declaration var_declaration type_specifier fun_declaration params param_list param compound_stmt local_declarations statement_list
-%type<node> statement expression_stmt selection_stmt iteration_stmt return_stmt expression var simple_expression additive_expression term factor call args arg_list
+%type<node> statement expression_stmt selection_stmt iteration_stmt return_stmt expression var simple_expression additive_expression term factor call args arg_list for_stmt
 %left '+' '-'
 %left '*' '/'
 %expect 3
@@ -45,6 +45,12 @@ var_declaration : type_specifier ID ';' { // 建立变量的抽象语法树节�
                                                        getElement(symbolTable, $2)->lineValue = yylineno;
                                                        getElement(symbolTable, $2)->type = $1->operand;
                                                     }
+                | type_specifier ID '=' expression ';' {
+                                                       $$ = makeNode("var-declaration", $1, makeNode("=", makeNode($2, NULL,NULL), $4));
+                                                       getElement(symbolTable, $2)->lineValue = yylineno;
+                                                       getElement(symbolTable, $2)->type = $1->operand;
+                                                       getElement(symbolTable, $2)->value = $4->Val;
+                                                      }
                 ;
 type_specifier :  KEYWORD_INT { $$ = makeNode($1, NULL, NULL); } // 建立变量类型的语法分析
                |  KEYWORD_VOID { $$ = makeNode($1, NULL, NULL); }
@@ -83,6 +89,7 @@ statement : expression_stmt { $$ = $1; }
           | compound_stmt   { $$ = $1; }
           | selection_stmt  { $$ = $1; }
           | iteration_stmt  { $$ = $1; }
+          | for_stmt        { $$ = $1; }
           | return_stmt     { $$ = $1; }
           ;
 expression_stmt : expression  ';' { $$ = $1; }
@@ -100,6 +107,13 @@ iteration_stmt : KEYWORD_WHILE '(' expression {
                 ')' statement {
                               $$ = makeNode("while", $3, $6);
                             }
+                ;
+for_stmt : KEYWORD_FOR '('  ';' expression ';' ')' statement { $$ = makeNode("for",$4,$7); }
+                |KEYWORD_FOR '(' expression ';' expression ';' ')' statement {$$ = makeNode("for",$3,makeNode("mian",$5,$8));}
+                |KEYWORD_FOR '(' expression ';' expression ';' expression ')' statement{$$=makeNode("for",$3,makeNode("main",$5,makeNode("statement",$7,$9)));}
+                |KEYWORD_FOR '(' ';' expression ';' expression ')' statement {$$=makeNode("for", $4,makeNode("statement",$6,$8));}
+                |KEYWORD_FOR '(' var_declaration expression ';' expression ')' statement {$$=makeNode("for",$3,makeNode("main",$4,makeNode("statement",$6,$8)));}
+                |KEYWORD_FOR '(' var_declaration expression ';' ')' statement {$$ = makeNode("for",$3,makeNode("mian",$4,$7));}
                 ;
 return_stmt : KEYWORD_RETURN ';' { $$ = makeNode("return\n", NULL, NULL); }
             | KEYWORD_RETURN expression ';' { $$ = makeNode("return", NULL, $2); }
