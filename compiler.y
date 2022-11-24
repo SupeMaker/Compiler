@@ -15,11 +15,11 @@ int yylex();
   struct astNode *node;
 }
 
-%token<name> ID NUM LESS_EQUAL_THAN LESS_THAN GREAT_THAN GREAT_EQUAL_THAN DOUBLE_EQUAL NOT_EQUAL
+%token<name> ID NUM LESS_EQUAL_THAN LESS_THAN GREAT_THAN GREAT_EQUAL_THAN DOUBLE_EQUAL NOT_EQUAL KEYWORD_DOUBLE_LESS KEYWORD_OUT
 %token<name> KEYWORD_ELSE KEYWORD_IF KEYWORD_INT KEYWORD_RETURN KEYWORD_VOID KEYWORD_WHILE MULTI_LINE_ANNOTATION
 %token<name> KEYWORD_AND KEYWORD_OR KEYWORD_NO KEYWORD_FOR KEYWORD_BREAK KEYWORD_CONTINUE DOUBLE_ADD DOUBLE_SUB
 %type<node> program comment declaration_list declaration var_declaration type_specifier fun_declaration params param_list param compound_stmt local_declarations statement_list
-%type<node> statement expression_stmt selection_stmt iteration_stmt return_stmt expression var simple_expression additive_expression term factor call args arg_list for_stmt break_stmt continue_stmt
+%type<node> statement expression_stmt selection_stmt iteration_stmt return_stmt expression var simple_expression additive_expression term factor call args arg_list for_stmt break_stmt continue_stmt cout_stmt
 %left '+' '-'
 %left '*' '/'
 %expect 3
@@ -52,6 +52,8 @@ var_declaration : type_specifier ID ';' { // 建立变量的抽象语法树节�
                                                        getElement(symbolTable, $2)->value = $4->Val;
                                                       }
                 ;
+cout_stmt : KEYWORD_OUT KEYWORD_DOUBLE_LESS ID ';' { $$ = makeNode("cout_stmt",makeNode($3,NULL,NULL),NULL);}
+          ;
 type_specifier :  KEYWORD_INT { $$ = makeNode($1, NULL, NULL); } // 建立变量类型的语法分析
                |  KEYWORD_VOID { $$ = makeNode($1, NULL, NULL); }
                ;
@@ -92,6 +94,7 @@ statement : expression_stmt { $$ = $1; }
           | for_stmt        { $$ = $1; }
           | continue_stmt   { $$ = $1; }
           | break_stmt      { $$ = $1; }
+          | cout_stmt       { $$ = $1; }
           | return_stmt     { $$ = $1; }
           ;
 expression_stmt : expression  ';' { $$ = $1; }
@@ -133,7 +136,6 @@ expression : var '=' expression { $$ = makeNode("=",$1,$3); getElement(symbolTab
             }
            | simple_expression KEYWORD_AND simple_expression        { $$ = makeNode("expression", $1, $3); $$->Val = $1 && $3; }
            | simple_expression KEYWORD_OR simple_expression        { $$ = makeNode("expression", $1, $3); $$->Val = $1 || $3; }
-           | KEYWORD_NO '(' simple_expression ')'       { $$ = makeNode("expression", $3, NULL); $$->Val = !$3; }
            | simple_expression { $$ = $1; }
 var : ID {
             $$ = makeNode($1, NULL, NULL);
@@ -156,6 +158,7 @@ simple_expression : additive_expression LESS_EQUAL_THAN additive_expression  { $
                                                 if (strcmp(getElement(symbolTable, $$->operand)->type, "int") == 0) // 检测while参数出现错误。
                                                     whileflag = 1;
                                         }
+                  | KEYWORD_NO  simple_expression       { $$ = makeNode("expression", $2, NULL); $$->Val = !$2; }
                   ;
 additive_expression : additive_expression '+' term { $$ = makeNode("+",$1,$3); $$->Val = $1->Val + $3->Val;}
                     | additive_expression '-' term { $$ = makeNode("-",$1,$3); $$->Val = $1->Val - $3->Val;}

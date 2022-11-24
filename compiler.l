@@ -1,3 +1,5 @@
+%x COMMENT
+%x IFILE
 %{
 #include "y.tab.h"
 void yyerror(char* msg);
@@ -13,6 +15,9 @@ NUM        {digit}{digit}*
 
 %%
 
+^"#"[ \t]*include[ \t]*[\"<]                    { printf("%s", yytext); yylval.name = strdup(yytext); BEGIN IFILE; }
+<IFILE>[^>\"]+[>\"]                             { printf("%s\n", yytext); { int c; while((c = input()) && c != '\n');} yylval.name = strdup(yytext); BEGIN INITIAL; }
+<IFILE>.|\n                                     { printf("%s", yytext);  BEGIN INITIAL; }
 {delim}+                                        { printf("%s", yytext); }
 "\n"|"\r\n"                                     { printf("%s", yytext); }
 "{"                                             { left_BRACE++; printf("%s", yytext); yylval.name = strdup(yytext); return yytext[0];}
@@ -21,6 +26,8 @@ NUM        {digit}{digit}*
 ")"                                             { right_parenthesis++; printf("%s", yytext); yylval.name = strdup(yytext); return yytext[0];}
 "["|"]"|";"|"^"|"%"|"/"|"*"|"-"|"+"|"="|","     { printf("%s", yytext); yylval.name = strdup(yytext); return yytext[0];}
 "++"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return DOUBLE_ADD; }
+"<<"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_DOUBLE_LESS; }
+"cout"                                          { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_OUT; }
 "--"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return DOUBLE_SUB; }
 "else"                                          { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_ELSE; }
 "if"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_IF; }
@@ -41,8 +48,9 @@ NUM        {digit}{digit}*
 "||"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_OR; }
 "!"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_NO; }
 {id}                                            { printf("%s", yytext); yylval.name = strdup(yytext); return ID; }
-{NUM}                                           { printf("%s", yytext); yylval.name = strdup(yytext); return NUM; }
+-?{NUM}                                           { printf("%s", yytext); yylval.name = strdup(yytext); return NUM; }
 "/*"[^*]*"*/"|"/*"[^*]*"*/"\n                   { printf("%s", yytext); return MULTI_LINE_ANNOTATION; }
+"//".*
 .                                               { printf("%s", yytext); return 0; }
 
 %%
