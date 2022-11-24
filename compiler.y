@@ -17,9 +17,9 @@ int yylex();
 
 %token<name> ID NUM LESS_EQUAL_THAN LESS_THAN GREAT_THAN GREAT_EQUAL_THAN DOUBLE_EQUAL NOT_EQUAL
 %token<name> KEYWORD_ELSE KEYWORD_IF KEYWORD_INT KEYWORD_RETURN KEYWORD_VOID KEYWORD_WHILE MULTI_LINE_ANNOTATION
-%token<name> KEYWORD_AND KEYWORD_OR KEYWORD_NO KEYWORD_FOR
+%token<name> KEYWORD_AND KEYWORD_OR KEYWORD_NO KEYWORD_FOR KEYWORD_BREAK KEYWORD_CONTINUE DOUBLE_ADD DOUBLE_SUB
 %type<node> program comment declaration_list declaration var_declaration type_specifier fun_declaration params param_list param compound_stmt local_declarations statement_list
-%type<node> statement expression_stmt selection_stmt iteration_stmt return_stmt expression var simple_expression additive_expression term factor call args arg_list for_stmt
+%type<node> statement expression_stmt selection_stmt iteration_stmt return_stmt expression var simple_expression additive_expression term factor call args arg_list for_stmt break_stmt continue_stmt
 %left '+' '-'
 %left '*' '/'
 %expect 3
@@ -90,6 +90,8 @@ statement : expression_stmt { $$ = $1; }
           | selection_stmt  { $$ = $1; }
           | iteration_stmt  { $$ = $1; }
           | for_stmt        { $$ = $1; }
+          | continue_stmt   { $$ = $1; }
+          | break_stmt      { $$ = $1; }
           | return_stmt     { $$ = $1; }
           ;
 expression_stmt : expression  ';' { $$ = $1; }
@@ -118,7 +120,17 @@ for_stmt : KEYWORD_FOR '('  ';' expression ';' ')' statement { $$ = makeNode("fo
 return_stmt : KEYWORD_RETURN ';' { $$ = makeNode("return\n", NULL, NULL); }
             | KEYWORD_RETURN expression ';' { $$ = makeNode("return", NULL, $2); }
             ;
+continue_stmt : KEYWORD_CONTINUE ';' { $$ = makeNode("continue\n", NULL, NULL); }
+              ;
+break_stmt : KEYWORD_BREAK ';' { $$ = makeNode("break\n", NULL, NULL); }
+           ;
 expression : var '=' expression { $$ = makeNode("=",$1,$3); getElement(symbolTable, $1->operand)->value = $3->Val;}
+           | var DOUBLE_ADD {
+              $$ = makeNode("auto_incr", $1, makeNode("++",NULL,NULL)); getElement(symbolTable, $1->operand)->value = $1->Val + 1;
+            }
+           | var DOUBLE_SUB {
+              $$ = makeNode("auto_decr", $1, makeNode("--",NULL,NULL)); getElement(symbolTable, $1->operand)->value = $1->Val - 1;
+            }
            | simple_expression KEYWORD_AND simple_expression        { $$ = makeNode("expression", $1, $3); $$->Val = $1 && $3; }
            | simple_expression KEYWORD_OR simple_expression        { $$ = makeNode("expression", $1, $3); $$->Val = $1 || $3; }
            | KEYWORD_NO '(' simple_expression ')'       { $$ = makeNode("expression", $3, NULL); $$->Val = !$3; }

@@ -72,7 +72,11 @@ extern int yydebug;
     KEYWORD_AND = 273,             /* KEYWORD_AND  */
     KEYWORD_OR = 274,              /* KEYWORD_OR  */
     KEYWORD_NO = 275,              /* KEYWORD_NO  */
-    KEYWORD_FOR = 276              /* KEYWORD_FOR  */
+    KEYWORD_FOR = 276,             /* KEYWORD_FOR  */
+    KEYWORD_BREAK = 277,           /* KEYWORD_BREAK  */
+    KEYWORD_CONTINUE = 278,        /* KEYWORD_CONTINUE  */
+    DOUBLE_ADD = 279,              /* DOUBLE_ADD  */
+    DOUBLE_SUB = 280               /* DOUBLE_SUB  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -100,6 +104,10 @@ extern int yydebug;
 #define KEYWORD_OR 274
 #define KEYWORD_NO 275
 #define KEYWORD_FOR 276
+#define KEYWORD_BREAK 277
+#define KEYWORD_CONTINUE 278
+#define DOUBLE_ADD 279
+#define DOUBLE_SUB 280
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -110,7 +118,7 @@ union YYSTYPE
   char* name;
   struct astNode *node;
 
-#line 114 "y.tab.h"
+#line 122 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
