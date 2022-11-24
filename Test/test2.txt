@@ -1,0 +1,18 @@
+#include<stdio.h>
+
+int main(void) {
+    int a;
+    int b;
+    int c;
+    a = 1;
+    b = 0;
+
+    // Fibonacci
+    for (int i = 2; i < 20; i++) {
+        c = a;
+        a = a + b;
+        b = c;
+    }
+    cout << i;
+    return 0;
+}
