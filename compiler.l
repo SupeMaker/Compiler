@@ -20,6 +20,8 @@ NUM        {digit}{digit}*
 "("                                             { left_parenthesis++; printf("%s", yytext); yylval.name = strdup(yytext); return yytext[0];}
 ")"                                             { right_parenthesis++; printf("%s", yytext); yylval.name = strdup(yytext); return yytext[0];}
 "["|"]"|";"|"^"|"%"|"/"|"*"|"-"|"+"|"="|","     { printf("%s", yytext); yylval.name = strdup(yytext); return yytext[0];}
+"++"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return DOUBLE_ADD; }
+"--"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return DOUBLE_SUB; }
 "else"                                          { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_ELSE; }
 "if"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_IF; }
 "int"                                           { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_INT; }
@@ -27,6 +29,8 @@ NUM        {digit}{digit}*
 "void"                                          { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_VOID; }
 "while"                                         { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_WHILE; }
 "for"                                           { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_FOR; }
+"break"                                         { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_BREAK; }
+"continue"                                      { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_CONTINUE; }
 "<"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return LESS_THAN; }
 "<="                                            { printf("%s", yytext); yylval.name = strdup(yytext); return LESS_EQUAL_THAN; }
 ">"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return GREAT_THAN; }

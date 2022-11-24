@@ -8,6 +8,7 @@ int main(void)
 	int d;
 	int e;
 	int f;
+	int g = 0;
 
 	i = 3;
 	j = 4;
@@ -17,8 +18,17 @@ int main(void)
 	d = b/(0-a);
 	e = b%a;
 	f = i ^ j;
-	for (int z = 0; z < 10; z = z + 1 ) {
+	for (int z = 0; z < 10; z++) {
 		f = z * 5;
+		if (z == 1) {
+			continue;
+		}
+		if ( z == 2) {
+			break;
+		}
+	}
+	while (g < 5) {
+		g = g + 1;
 	}
 	return;
 }
