@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include<stdio.h>
 #include "ASTNode.h"
-int flags[100], whileflag, declared_error;
+int flags[100], whileflag, declared_error, type_error;
 node *makeNode(char *rootname, node *left, node *right )
 {
 	node *newnode = (node *)malloc(sizeof(node));

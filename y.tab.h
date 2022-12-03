@@ -56,29 +56,30 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     ID = 258,                      /* ID  */
     NUM = 259,                     /* NUM  */
-    LESS_EQUAL_THAN = 260,         /* LESS_EQUAL_THAN  */
-    LESS_THAN = 261,               /* LESS_THAN  */
-    GREAT_THAN = 262,              /* GREAT_THAN  */
-    GREAT_EQUAL_THAN = 263,        /* GREAT_EQUAL_THAN  */
-    DOUBLE_EQUAL = 264,            /* DOUBLE_EQUAL  */
-    NOT_EQUAL = 265,               /* NOT_EQUAL  */
-    KEYWORD_DOUBLE_LESS = 266,     /* KEYWORD_DOUBLE_LESS  */
-    KEYWORD_OUT = 267,             /* KEYWORD_OUT  */
-    KEYWORD_ELSE = 268,            /* KEYWORD_ELSE  */
-    KEYWORD_IF = 269,              /* KEYWORD_IF  */
-    KEYWORD_INT = 270,             /* KEYWORD_INT  */
-    KEYWORD_RETURN = 271,          /* KEYWORD_RETURN  */
-    KEYWORD_VOID = 272,            /* KEYWORD_VOID  */
-    KEYWORD_WHILE = 273,           /* KEYWORD_WHILE  */
-    MULTI_LINE_ANNOTATION = 274,   /* MULTI_LINE_ANNOTATION  */
-    KEYWORD_AND = 275,             /* KEYWORD_AND  */
-    KEYWORD_OR = 276,              /* KEYWORD_OR  */
-    KEYWORD_NO = 277,              /* KEYWORD_NO  */
-    KEYWORD_FOR = 278,             /* KEYWORD_FOR  */
-    KEYWORD_BREAK = 279,           /* KEYWORD_BREAK  */
-    KEYWORD_CONTINUE = 280,        /* KEYWORD_CONTINUE  */
-    DOUBLE_ADD = 281,              /* DOUBLE_ADD  */
-    DOUBLE_SUB = 282               /* DOUBLE_SUB  */
+    FNUM = 260,                    /* FNUM  */
+    LESS_EQUAL_THAN = 261,         /* LESS_EQUAL_THAN  */
+    LESS_THAN = 262,               /* LESS_THAN  */
+    GREAT_THAN = 263,              /* GREAT_THAN  */
+    GREAT_EQUAL_THAN = 264,        /* GREAT_EQUAL_THAN  */
+    DOUBLE_EQUAL = 265,            /* DOUBLE_EQUAL  */
+    NOT_EQUAL = 266,               /* NOT_EQUAL  */
+    KEYWORD_DOUBLE_LESS = 267,     /* KEYWORD_DOUBLE_LESS  */
+    KEYWORD_OUT = 268,             /* KEYWORD_OUT  */
+    KEYWORD_ELSE = 269,            /* KEYWORD_ELSE  */
+    KEYWORD_IF = 270,              /* KEYWORD_IF  */
+    KEYWORD_INT = 271,             /* KEYWORD_INT  */
+    KEYWORD_RETURN = 272,          /* KEYWORD_RETURN  */
+    KEYWORD_VOID = 273,            /* KEYWORD_VOID  */
+    KEYWORD_WHILE = 274,           /* KEYWORD_WHILE  */
+    MULTI_LINE_ANNOTATION = 275,   /* MULTI_LINE_ANNOTATION  */
+    KEYWORD_AND = 276,             /* KEYWORD_AND  */
+    KEYWORD_OR = 277,              /* KEYWORD_OR  */
+    KEYWORD_NO = 278,              /* KEYWORD_NO  */
+    KEYWORD_FOR = 279,             /* KEYWORD_FOR  */
+    KEYWORD_BREAK = 280,           /* KEYWORD_BREAK  */
+    KEYWORD_CONTINUE = 281,        /* KEYWORD_CONTINUE  */
+    DOUBLE_ADD = 282,              /* DOUBLE_ADD  */
+    DOUBLE_SUB = 283               /* DOUBLE_SUB  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -89,29 +90,30 @@ extern int yydebug;
 #define YYUNDEF 257
 #define ID 258
 #define NUM 259
-#define LESS_EQUAL_THAN 260
-#define LESS_THAN 261
-#define GREAT_THAN 262
-#define GREAT_EQUAL_THAN 263
-#define DOUBLE_EQUAL 264
-#define NOT_EQUAL 265
-#define KEYWORD_DOUBLE_LESS 266
-#define KEYWORD_OUT 267
-#define KEYWORD_ELSE 268
-#define KEYWORD_IF 269
-#define KEYWORD_INT 270
-#define KEYWORD_RETURN 271
-#define KEYWORD_VOID 272
-#define KEYWORD_WHILE 273
-#define MULTI_LINE_ANNOTATION 274
-#define KEYWORD_AND 275
-#define KEYWORD_OR 276
-#define KEYWORD_NO 277
-#define KEYWORD_FOR 278
-#define KEYWORD_BREAK 279
-#define KEYWORD_CONTINUE 280
-#define DOUBLE_ADD 281
-#define DOUBLE_SUB 282
+#define FNUM 260
+#define LESS_EQUAL_THAN 261
+#define LESS_THAN 262
+#define GREAT_THAN 263
+#define GREAT_EQUAL_THAN 264
+#define DOUBLE_EQUAL 265
+#define NOT_EQUAL 266
+#define KEYWORD_DOUBLE_LESS 267
+#define KEYWORD_OUT 268
+#define KEYWORD_ELSE 269
+#define KEYWORD_IF 270
+#define KEYWORD_INT 271
+#define KEYWORD_RETURN 272
+#define KEYWORD_VOID 273
+#define KEYWORD_WHILE 274
+#define MULTI_LINE_ANNOTATION 275
+#define KEYWORD_AND 276
+#define KEYWORD_OR 277
+#define KEYWORD_NO 278
+#define KEYWORD_FOR 279
+#define KEYWORD_BREAK 280
+#define KEYWORD_CONTINUE 281
+#define DOUBLE_ADD 282
+#define DOUBLE_SUB 283
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -122,7 +124,7 @@ union YYSTYPE
   char* name;
   struct astNode *node;
 
-#line 126 "y.tab.h"
+#line 128 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

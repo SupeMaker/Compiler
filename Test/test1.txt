@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include "tress.h"
-int main(void) {
+int main() {
     int a = 50;
     int sum = -1;
 
