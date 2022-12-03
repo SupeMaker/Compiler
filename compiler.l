@@ -4,7 +4,7 @@
 #include "y.tab.h"
 void yyerror(char* msg);
 int left_BRACE, right_BRACE, left_parenthesis, right_parenthesis;
-extern int whileflag, declared_error;
+extern int whileflag, declared_error, type_error;
 %}
 %option yylineno
 delim      [ \t]
@@ -12,6 +12,7 @@ letter     [a-zA-Z]
 digit      [0-9]
 id         {letter}{letter}*|{letter}{digit}*
 NUM        {digit}{digit}*
+FNUM       [0-9]+"."[0-9]*
 
 %%
 
@@ -48,7 +49,8 @@ NUM        {digit}{digit}*
 "||"                                            { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_OR; }
 "!"                                             { printf("%s", yytext); yylval.name = strdup(yytext); return KEYWORD_NO; }
 {id}                                            { printf("%s", yytext); yylval.name = strdup(yytext); return ID; }
--?{NUM}                                           { printf("%s", yytext); yylval.name = strdup(yytext); return NUM; }
+-?{NUM}                                         { printf("%s", yytext); yylval.name = strdup(yytext); return NUM; }
+-?{FNUM}                                        { printf("%s", yytext); yylval.name = strdup(yytext); return FNUM; }
 "/*"[^*]*"*/"|"/*"[^*]*"*/"\n                   { printf("%s", yytext); return MULTI_LINE_ANNOTATION; }
 "//".*
 .                                               { printf("%s", yytext); return 0; }
@@ -64,6 +66,10 @@ void yyerror(char *msg) {
         exit(1);
     }
     if (declared_error){
+        printf("\nline %d: error: %s\n", yylineno, msg);
+        exit(1);
+    }
+    if (type_error) {
         printf("\nline %d: error: %s\n", yylineno, msg);
         exit(1);
     }

@@ -6,7 +6,7 @@
 #include "ASTNode.h"
 struct HashTable *symbolTable;
 extern int yylineno;
-extern int whileflag, declared_error, flags[100];
+extern int whileflag, declared_error, flags[100], type_error;
 int yylex();
 
 %}
@@ -15,7 +15,7 @@ int yylex();
   struct astNode *node;
 }
 
-%token<name> ID NUM LESS_EQUAL_THAN LESS_THAN GREAT_THAN GREAT_EQUAL_THAN DOUBLE_EQUAL NOT_EQUAL KEYWORD_DOUBLE_LESS KEYWORD_OUT
+%token<name> ID NUM FNUM LESS_EQUAL_THAN LESS_THAN GREAT_THAN GREAT_EQUAL_THAN DOUBLE_EQUAL NOT_EQUAL KEYWORD_DOUBLE_LESS KEYWORD_OUT
 %token<name> KEYWORD_ELSE KEYWORD_IF KEYWORD_INT KEYWORD_RETURN KEYWORD_VOID KEYWORD_WHILE MULTI_LINE_ANNOTATION
 %token<name> KEYWORD_AND KEYWORD_OR KEYWORD_NO KEYWORD_FOR KEYWORD_BREAK KEYWORD_CONTINUE DOUBLE_ADD DOUBLE_SUB
 %type<node> program comment declaration_list declaration var_declaration type_specifier fun_declaration params param_list param compound_stmt local_declarations statement_list
@@ -32,38 +32,40 @@ declaration_list : declaration_list declaration { $$ = makeNode("declaration_lis
                  | declaration { $$ = $1; }
                  | comment
                  ;
-declaration : var_declaration { $$ = $1; }
+declaration : var_declaration ';' { $$ = $1; }
             | fun_declaration { $$ = $1; }
             ;
-var_declaration : type_specifier ID ';' { // 建立变量的抽象语法树节点
+var_declaration : type_specifier ID { // 建立变量的抽象语法树节点
                                             $$ = makeNode("var-declaration", $1, makeNode($2, NULL, NULL));
                                             getElement(symbolTable, $2)->lineValue = yylineno;
                                             getElement(symbolTable, $2)->type = $1->operand;
                                         }
-                | type_specifier ID '[' NUM ']' ';' {
+                | type_specifier ID '[' NUM ']' {
                                                        $$ = makeNode("var-declaration", $1, makeNode($2, NULL, NULL));
                                                        getElement(symbolTable, $2)->lineValue = yylineno;
                                                        getElement(symbolTable, $2)->type = $1->operand;
-                                                    }
-                | type_specifier ID '=' expression ';' {
+                                                }
+                | type_specifier ID '=' expression  {
                                                        $$ = makeNode("var-declaration", $1, makeNode("=", makeNode($2, NULL,NULL), $4));
                                                        getElement(symbolTable, $2)->lineValue = yylineno;
                                                        getElement(symbolTable, $2)->type = $1->operand;
                                                        getElement(symbolTable, $2)->value = $4->Val;
-                                                      }
+                                                    }
                 ;
 cout_stmt : KEYWORD_OUT KEYWORD_DOUBLE_LESS ID ';' { $$ = makeNode("cout_stmt",makeNode($3,NULL,NULL),NULL);}
           ;
 type_specifier :  KEYWORD_INT { $$ = makeNode($1, NULL, NULL); } // 建立变量类型的语法分析
                |  KEYWORD_VOID { $$ = makeNode($1, NULL, NULL); }
                ;
-fun_declaration : type_specifier ID '(' params ')' compound_stmt { $$ = makeNode("fun_declaration", $1, $6); }
+fun_declaration : type_specifier ID '(' params ')' compound_stmt { $$ = makeNode("fun_declaration", $1, $6); } // 函数声明与定义
+                | type_specifier ID '(' params ')' ';' { $$ = makeNode("fun_declaration", $1, $4); }  // 函数声明
                 ; // 建立函数的节点
 comment : comment MULTI_LINE_ANNOTATION {}  // 处理注释
         | {}
         ;
 params  : param_list { $$ = $1; } // 函数参数
         | KEYWORD_VOID  { $$ = makeNode($1, NULL, NULL); }
+        | {}
         ;
 param_list : param_list ','  param { $$ = makeNode("param_list", $1, $3); }  // 参数列表
            | param { $$ = $1; }
@@ -81,7 +83,7 @@ param : type_specifier  ID {  // 参数是标识符
       ;
 compound_stmt : '{' local_declarations statement_list '}' { $$ = makeNode("compound_stmt", $2, $3); } // 函数体的定义
               ;
-local_declarations  : local_declarations var_declaration { $$ = makeNode("local-declarations", $1, $2); }
+local_declarations  : local_declarations var_declaration ';' { $$ = makeNode("local-declarations", $1, $2); }
                     | { $$ = makeNode("empty", NULL, NULL); } // 可以处理 { 这个大括号后面为空的情况， 也可以处理后面有定义的地方
                     ;
 statement_list  : statement_list statement comment { $$ = makeNode("statement_list", $1, $2); }
@@ -117,8 +119,8 @@ for_stmt : KEYWORD_FOR '('  ';' expression ';' ')' statement { $$ = makeNode("fo
                 |KEYWORD_FOR '(' expression ';' expression ';' ')' statement {$$ = makeNode("for",$3,makeNode("mian",$5,$8));}
                 |KEYWORD_FOR '(' expression ';' expression ';' expression ')' statement{$$=makeNode("for",$3,makeNode("main",$5,makeNode("statement",$7,$9)));}
                 |KEYWORD_FOR '(' ';' expression ';' expression ')' statement {$$=makeNode("for", $4,makeNode("statement",$6,$8));}
-                |KEYWORD_FOR '(' var_declaration expression ';' expression ')' statement {$$=makeNode("for",$3,makeNode("main",$4,makeNode("statement",$6,$8)));}
-                |KEYWORD_FOR '(' var_declaration expression ';' ')' statement {$$ = makeNode("for",$3,makeNode("mian",$4,$7));}
+                |KEYWORD_FOR '(' var_declaration ';' expression ';' expression ')' statement {$$=makeNode("for",$3,makeNode("main",$5,makeNode("statement",$7,$9)));}
+                |KEYWORD_FOR '(' var_declaration ';' expression ';' ')' statement {$$ = makeNode("for",$3,makeNode("mian",$5,$8));}
                 ;
 return_stmt : KEYWORD_RETURN ';' { $$ = makeNode("return\n", NULL, NULL); }
             | KEYWORD_RETURN expression ';' { $$ = makeNode("return", NULL, $2); }
@@ -189,6 +191,7 @@ factor : '(' expression ')' { $$ = $2; }
              }
        | call { $$ = $1; }
        | NUM { $$ = makeNode($1,NULL,NULL); $$->Val = atoi($1);}
+       | FNUM { type_error = 1; yyerror("Type error! The id is int, but the number is float."); }
        ;
 call : ID '(' args ')' { $$ = makeNode("call", makeNode($1, NULL, NULL), $3); }
      ;

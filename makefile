@@ -14,6 +14,7 @@ run: $(OUT)
 clean:
 	rm -f *.o lex.yy.c y.tab.c y.tab.h y.output $(OUT) test.asm
 
+# 这里编译生成可执行文件
 $(OUT): $(OBJ)
 	$(CC) -o $(OUT) $(OBJ)
 
@@ -28,6 +29,12 @@ symbol.o: symbol.c
 
 ASTNode.o: ASTNode.c
 	$(CC) -c $<
+
+
+# 编译生成目标文件
+# 正常的语句为
+# symbol.o:	symbol.c
+# 		gcc -c symbol.c
 
 # fout: compiler.l compiler.y symbol.h ASTNode.h
 # 	bison -d compiler.y

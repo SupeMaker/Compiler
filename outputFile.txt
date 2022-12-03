@@ -1,12 +1,20 @@
 #include<stdio.h>
 
-int main(void) {
+int func(int a);
+
+
+int main() {
     int a;
     int b;
+    int arr[5];
     int c;
+    int d = 5;
+    int x;
     a = 1;
     b = 0;
-
+    b = a;
+    arr[1] = a;
+    func();
     
     for (int i = 2; i < 20; i++) {
         c = a;
@@ -16,77 +24,135 @@ int main(void) {
     cout << i;
     return 0;
 }
+int func(int a){
+    int zindex = a;
+}
 \--> program
-  \--> fun_declaration
-    |--> int
-    \--> compound_stmt
-      |--> local-declarations
-      | |--> local-declarations
-      | | |--> local-declarations
-      | | | \--> var-declaration
-      | | |   |--> int
-      | | |   \--> a
-      | | \--> var-declaration
-      | |   |--> int
-      | |   \--> b
-      | \--> var-declaration
-      |   |--> int
-      |   \--> c
-      \--> statement_list
-        |--> statement_list
-        | |--> statement_list
-        | | |--> statement_list
-        | | | |--> statement_list
-        | | | | \--> =
-        | | | |   |--> a
-        | | | |   \--> 1
-        | | | \--> =
-        | | |   |--> b
-        | | |   \--> 0
-        | | \--> for
-        | |   |--> var-declaration
-        | |   | |--> int
-        | |   | \--> =
-        | |   |   |--> i
-        | |   |   \--> 2
-        | |   \--> main
-        | |     |--> simple_expression
-        | |     | |--> i
-        | |     | \--> 20
-        | |     \--> statement
-        | |       |--> auto_incr
-        | |       | |--> i
-        | |       | \--> ++
-        | |       \--> compound_stmt
-        | |         \--> statement_list
-        | |           |--> statement_list
-        | |           | |--> statement_list
-        | |           | | \--> =
-        | |           | |   |--> c
-        | |           | |   \--> a
-        | |           | \--> =
-        | |           |   |--> a
-        | |           |   \--> +
-        | |           |     |--> a
-        | |           |     \--> b
-        | |           \--> =
-        | |             |--> b
-        | |             \--> c
-        | \--> cout_stmt
-        |   |--> i
+  \--> declaration_list
+    |--> declaration_list
+    | |--> fun_declaration
+    | | |--> int
+    | | \--> var-declaration
+    | |   |--> int
+    | |   \--> a
+    | \--> fun_declaration
+    |   |--> int
+    |   \--> compound_stmt
+    |     |--> local-declarations
+    |     | |--> local-declarations
+    |     | | |--> local-declarations
+    |     | | | |--> local-declarations
+    |     | | | | |--> local-declarations
+    |     | | | | | |--> local-declarations
+    |     | | | | | | \--> var-declaration
+    |     | | | | | |   |--> int
+    |     | | | | | |   \--> a
+    |     | | | | | \--> var-declaration
+    |     | | | | |   |--> int
+    |     | | | | |   \--> b
+    |     | | | | \--> var-declaration
+    |     | | | |   |--> int
+    |     | | | |   \--> arr
+    |     | | | \--> var-declaration
+    |     | | |   |--> int
+    |     | | |   \--> c
+    |     | | \--> var-declaration
+    |     | |   |--> int
+    |     | |   \--> =
+    |     | |     |--> d
+    |     | |     \--> 5
+    |     | \--> var-declaration
+    |     |   |--> int
+    |     |   \--> x
+    |     \--> statement_list
+    |       |--> statement_list
+    |       | |--> statement_list
+    |       | | |--> statement_list
+    |       | | | |--> statement_list
+    |       | | | | |--> statement_list
+    |       | | | | | |--> statement_list
+    |       | | | | | | |--> statement_list
+    |       | | | | | | | \--> =
+    |       | | | | | | |   |--> a
+    |       | | | | | | |   \--> 1
+    |       | | | | | | \--> =
+    |       | | | | | |   |--> b
+    |       | | | | | |   \--> 0
+    |       | | | | | \--> =
+    |       | | | | |   |--> b
+    |       | | | | |   \--> a
+    |       | | | | \--> =
+    |       | | | |   |--> var
+    |       | | | |   | |--> arr
+    |       | | | |   | \--> 1
+    |       | | | |   \--> a
+    |       | | | \--> call
+    |       | | |   |--> func
+    |       | | |   \--> a
+    |       | | \--> for
+    |       | |   |--> var-declaration
+    |       | |   | |--> int
+    |       | |   | \--> =
+    |       | |   |   |--> i
+    |       | |   |   \--> 2
+    |       | |   \--> main
+    |       | |     |--> simple_expression
+    |       | |     | |--> i
+    |       | |     | \--> 20
+    |       | |     \--> statement
+    |       | |       |--> auto_incr
+    |       | |       | |--> i
+    |       | |       | \--> ++
+    |       | |       \--> compound_stmt
+    |       | |         \--> statement_list
+    |       | |           |--> statement_list
+    |       | |           | |--> statement_list
+    |       | |           | | \--> =
+    |       | |           | |   |--> c
+    |       | |           | |   \--> a
+    |       | |           | \--> =
+    |       | |           |   |--> a
+    |       | |           |   \--> +
+    |       | |           |     |--> a
+    |       | |           |     \--> b
+    |       | |           \--> =
+    |       | |             |--> b
+    |       | |             \--> c
+    |       | \--> cout_stmt
+    |       |   |--> i
 
-        \--> return
-          \--> 0
+    |       \--> return
+    |         \--> 0
+    \--> fun_declaration
+      |--> int
+      \--> compound_stmt
+        |--> local-declarations
+        | \--> var-declaration
+        |   |--> int
+        |   \--> =
+        |     |--> zindex
+        |     \--> a
+\--> empty
 +-------------------------------------------+
 |                Symbol Table               |
 +----------+----------+---------------+----------+
 |  symbol  |   value  |   lineValue   |   type   |
 +----------+----------+----------+----------+
-|        a |        1 |        4 |      int |
+|        a |        2 |       27 |      int |
 +----------+----------+----------+----------+
-|        b |        1 |        5 |      int |
+|        b |        1 |        8 |      int |
 +----------+----------+----------+----------+
-|        c |        1 |        6 |      int |
+|      arr |        0 |        9 |      int |
 +----------+----------+----------+----------+
-|        i |        1 |       11 |      int |
+|        c |        1 |       10 |      int |
++----------+----------+----------+----------+
+|        d |        5 |       11 |      int |
++----------+----------+----------+----------+
+|        x |        0 |       12 |      int |
++----------+----------+----------+----------+
+|      var |        1 |        0 |   (null) |
++----------+----------+----------+----------+
+|        i |        1 |       19 |      int |
++----------+----------+----------+----------+
+|   zindex |        2 |       28 |      int |
 +----------+----------+----------+----------+
